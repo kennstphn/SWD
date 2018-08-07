@@ -2,7 +2,6 @@
 namespace SWD\Website;
 
 
-use Doctrine\Common\Util\Debug;
 use SWD\DataController\DataControllerFactory;
 use SWD\Request\Request_interface;
 use SWD\Response\Response_interface;
@@ -29,32 +28,32 @@ class Website
     protected $response;
     public $output;
     public $errorWarnings;
-    
+
     /** @var ModularArray */
     protected $modules;
-    
+
     protected $dataControllerFactory = DataControllerFactory::class;
     protected $renderControllerFactory = RenderControllerFactory::class;
-    
+
 
     function __construct(Request_interface $request, Response_interface $response)
     {
-        
+
         ob_start();
         $this->request = $request;
         $this->response = $response;
         $this->blockCsrf();
         $this->modules = new ModularArray($this->request, $this->response);
     }
-    
+
     function blockCsrf(){
         $csrfProtector = new CsrfProtection($this->request, $this->response);
         $csrfProtector->blockInvalidRequests();
         $csrfProtector->persistToken();
     }
-    
+
     function run(){
-        
+
         $this->invokeModulesByHook(self::INIT);
 
         $this->invokeModulesByHook(self::INIT_DONE);
@@ -117,7 +116,7 @@ class Website
     function setDebugMode(int $mode){
         $this->debugMode = $mode;
     }
-    
+
     /**
      * @param string $hookName
      */
@@ -160,13 +159,25 @@ class Website
         $this->modules = $modules;
     }
 
+
+    protected function overrideModuleWithAppVersion($module){
+        if( ! is_string($module)){return $module;} //allow for callable modules, i.e. instantiated modules, closures, etc
+        $appVersion = str_replace('SWD', 'App', $module);
+
+        return class_exists($appVersion) ? $appVersion : $module;
+
+    }
+
     function addModule(string $hookname, $module){
+
+        $module = $this->overrideModuleWithAppVersion($module);
+
         if ( ! is_callable($module) && (is_string($module) && ! class_exists($module))){
             throw new \Exception('Failed to add module ');
         }
         $this->modules()->addModule($hookname,$module);
     }
-    
+
     /**
      * @return ModularArray
      */
@@ -174,7 +185,7 @@ class Website
     {
         return $this->modules;
     }
-    
+
 
     /**
      * @param $dataControllerFactory
@@ -199,7 +210,7 @@ class Website
         }
         $this->renderControllerFactory = $renderControllerFactory;
     }
-    
+
     protected function stringIsControllerFactory($string){
         return in_array(ControllerFactory_interface::class,class_implements($string));
     }
@@ -220,5 +231,5 @@ class Website
         }
         session_write_close();
     }
-    
+
 }
