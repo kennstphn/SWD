@@ -1,4 +1,19 @@
 {
+  "name": "shermanwebdesign/swd",
+  "description": "Sherman Web Design",
+  "minimum-stability": "dev",
+  "license": "wtfpl",
+  "authors": [
+    {
+      "name": "Ken Sherman",
+      "email": "ken@shermanwebdesign.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "SWD\\": "src/SWD"
+    }
+  },
   "require": {
     "twig/twig": "^2.4",
     "doctrine/orm": "^2.5",
