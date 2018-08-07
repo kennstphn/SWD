@@ -1,0 +1,25 @@
+{% extends 'index.twig' %}
+{% block content %}
+    {% import 'entity.render.twig' as entityCard %}
+        <div class="container-fluid">
+            <h1> {{ entityClass|replace({'App\\Entities\\':''}) }} <span class="small">{{ h1 }}</span></h1>
+            <div class="row">
+                {% for entity in data %}
+                    <div class="col-lg-6">
+                        {{ entityCard.panelize(entity) }}
+                    </div>
+                {% endfor %}
+            </div>
+            {% if meta.pagination %}
+            <ul class="pagination pagination-large">
+                {% set lastPage = (meta.pagination.total / meta.pagination.perPage)|round(0,'ceil') %}
+                <li class="{{ (meta.pagination.page == 1) ? 'disabled' : '' }}"><a href="?page={{ meta.pagination.page - 1 > 0 ? meta.pagination.page - 1 : 1 }}&perPage={{ meta.pagination.perPage }}">&laquo;</a></li>
+                {% for i in 1..lastPage %}
+                    <li class="{{ (meta.pagination.page == i) ? 'active' : '' }}"><a href="?page={{ i }}&perPage={{ meta.pagination.perPage }}" >{{ i }}</a></li>
+                {% endfor %}
+                <li class="{{ (meta.pagination.page == lastPage)?'disabled':'' }}"><a href="?page={{ (meta.pagination.page + 1 <= lastPage )? meta.pagination.page + 1 : lastPage}}&perPage={{ meta.pagination.perPage }}">&raquo;</a></li>
+            </ul>
+            {% endif %}
+        </div>
+
+{% endblock %}

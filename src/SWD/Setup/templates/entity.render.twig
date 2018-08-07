@@ -1,0 +1,139 @@
+{% extends 'index.twig' %}
+
+{% block content %}
+    {% import _self as entityCard %}
+    <div class="container" style="margin-top:100px;">
+        {{ entityCard.panelize(data) }}
+    </div>
+{% endblock %}
+
+{% macro panelize(entity) %}
+    {% import _self as entityCard %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">
+                {{ entity.name ?? entity.id }}  <span class="small">{{ class(entity) }}</span>
+                <div class="btn-group pull-right">
+                    <a type="button" href="{{ class(entity)|replace({'App\\Entities\\':'/'}) ~'/'~entity.id }}" class="btn btn-default">VIEW</a>
+                    <a type="button" href="{{ class(entity)|replace({'App\\Entities\\':'/'})~'/'~entity.id~'/edit' }}" class="btn btn-default">EDIT</a>
+                    <a type="button" href="javascript:if(window.confirm('are you sure you want to delete {{ entity.name }}?')){$.post('{{ class(entity)|replace({'App\\Entities\\':'/'})~'/'~entity.id~'/delete' }}?json',{antiCsrfToken:token}).done(function(){window.location='{{ class(entity)|replace({'App\\Entities\\':'/'}) ~'/' }}';});};" class="btn btn-warning">DELETE</a>
+                </div>
+                <div class="clearfix">
+
+                </div>
+            </h3>
+        </div>
+        <div class="panel-body">
+            <!-- Table -->
+            <table class="table table-condensed table-responsive">
+                <thead>
+                <tr>
+                    <th>Attribute</th>
+                    <th>Value</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for fieldName in metadata(entity).fieldNames %}
+                    <tr>
+                        <td>{{ fieldName }}</td>
+                        <td>
+                            {% if fieldName == 'password' %}
+                                {{ '*******' }}
+                            {% elseif fieldName == 'file' %}
+                                {{ '<file not shown>'|escape }}
+                            {% elseif class(attribute(entity,fieldName)) == 'DateTime' %}
+                                {{ dateTime(attribute(entity,fieldName),'Y-m-d H:i:s') }}
+                            {% else %}
+                                {% if metadata(entity).fieldMapping(fieldName).type == 'text' %}
+                                    {{ attribute(entity,fieldName)|raw }}
+                                {% elseif metadata(entity).fieldMapping(fieldName).type == 'array' %}
+                                    <ol>
+                                    {% for i in attribute(entity,fieldName) %}
+                                        <li>{{ i }}</li>
+                                    {% endfor %}
+                                    </ol>
+                                {% elseif metadata(entity).fieldMapping(fieldName).type == 'blob' %}
+                                    <img class="img-responsive" style="margin:0 auto;" src="{{ entity.url ?? entity.base64 }}"/>
+
+                                {% else %}
+                                    {{ attribute(entity,fieldName) }}
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <h4>Relationships</h4>
+            <table class="table table-condensed table-responsive">
+                <thead>
+                <tr>
+                    <th>Association</th>
+                    <th>Class</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for map in metadata(entity).associationMappings %}
+                    {% if map.type <= 3 %}
+                        {{ entityCard.toOne(entity,map) }}
+                    {% else %}
+                        {{ entityCard.toMany(entity,map) }}
+                    {% endif %}
+                {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro toOne(entity,map) %}
+    {% import _self as entityCard %}
+    <tr>
+        <td>{{ map.fieldName }}</td>
+        <td>{{ map.targetEntity|replace({'App\\Entities\\':''}) }}</td>
+        <td>
+            {% set e = attribute(entity,map.fieldName) %}
+            {% if e is null and map.isOwningSide == false %}
+                <a type="button"  class="btn btn-default" href="{{ domain ~ '/api/'~map.fieldName|replace({'App\\Entities\\':'','\\':'/'}) ~'/create' }}">Create</a>
+            {% elseif e is null and map.isOwningSide %}
+                <a type="button" class="btn btn-default disabled"  href="#">{{ '( none )'|e }}</a>
+            {% else %}
+                <a type="button" class="btn btn-default" href="/{{ class(e)|replace({'App\\Entities\\':'','DoctrineProxies\\__CG__\\':'','\\':'/'}) }}/{{ e.id }}">View <span class="badge">{{ e.name ?? ('ID:'~e.id) }}</span> </a>
+            {% endif %}
+        </td>
+    </tr>
+{% endmacro %}
+
+{% macro toMany(entity, map) %}
+    {% import _self as entityCard %}
+    <tr>
+        <td>{{ map.fieldName }}</td>
+        <td>{{ map.targetEntity|replace({'App\\Entities\\':''}) }}</td>
+        <td>
+            <a type="button" class="btn btn-default" href="{{ entityCard.viewUrl(entity,map) }}"> List <span class="badge">{{ attribute(entity,map.fieldName).count ?? 0 }}</span> </a>
+        </td>
+    </tr>
+{% endmacro %}
+
+{% macro viewUrl(entity,map) %}
+    {% set fieldValue  = attribute(entity,map.fieldName) %}
+    {% if fieldValue is iterable %}
+        {% set idList = [] %}
+        {% for e in attribute(entity,map.fieldName) %}
+            {% set idList = idList|merge([e.id]) %}
+        {% endfor %}
+        {% set searchValue = 'IN'~idList|join(',') %}
+    {% else %}
+        {% set searchValue = '='~fieldValue.id %}
+    {% endif %}
+
+    {% if map.inversedBy is null %}
+        {% set search = '/search/id'~searchValue %}
+    {% else %}
+        {% set search = '/search/id'~searchValue %}
+    {% endif %}
+    {{ '/'~ map.targetEntity|replace({'App\\Entities\\' : '', '\\' : '/'}) ~ search }}
+{% endmacro %}
+

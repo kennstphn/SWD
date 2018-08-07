@@ -11,6 +11,8 @@ abstract class EntityManagerFactory
 {
     protected static $em;
 
+    static $file = __FILE__;
+
     protected static function driver(){return 'pdo_mysql';}
     abstract static protected function user():string;
     abstract static protected function password():string;
@@ -65,7 +67,7 @@ abstract class EntityManagerFactory
     abstract protected static function entityDirectory():string;
 
     static function listEntityClasses():array{
-        return self::getCrawlableClasses();
+        return call_user_func([get_called_class(),'getCrawlableClasses']);
     }
 
     protected static function getCrawlableClasses($dir = null, $classPrefix = 'App\\Entities\\'):array{

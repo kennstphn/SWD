@@ -1,0 +1,11 @@
+{% extends 'index.twig' %}
+{% block content %}
+    <div class="container">
+        <h1>Edit <span class="small">{{ data.name }}</span></h1>
+        {% block form %}
+            {% set action = request.get.containsKey('action') ? request.get.containsKey('action') : ('/'~ ( ( class(data)|replace({'\\':'/'}) )|replace({'App/Entities/':''}) ) ~ '/' ~  data.id ~ '/edit') %}
+            {% import 'entity.form.twig' as form %}
+            {{ form.renderForm(formFields(data), 'post', action ) }}
+        {% endblock form %}
+    </div>
+{% endblock %}

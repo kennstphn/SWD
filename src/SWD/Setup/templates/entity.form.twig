@@ -1,0 +1,223 @@
+{% extends 'index.twig' %}
+{% macro renderForm(fieldList, method='post', url='') %}
+    {% import _self as form %}
+
+    <form action="{{ url }}" method="{{ method }}" enctype="multipart/form-data" role="form">
+        <input type="hidden" name="antiCsrfToken" >
+        <script>document.addEventListener('DOMContentLoaded',function(){$('[name="antiCsrfToken"]').val(token)})</script>
+        {% for field in fieldList %}{{ form.renderFormField(field) }}{% endfor %}
+        <button type="submit" onclick="this.form.submit();" class="btn btn-primary">Submit</button>
+    </form>
+{% endmacro %}
+
+{% macro renderFormField(field) %}
+    {% import _self as form %}
+
+    {% if field.tag == 'select' %}
+        {{ form.select(field) }}
+    {% elseif field.name == 'password' %}
+        {{ form.password(field) }}
+    {% elseif  field.tag == 'textarea' %}
+        {{ form.textarea(field) }}
+    {% elseif field.type == 'checkbox' %}
+        {{ form.checkbox(field) }}
+    {% elseif field.type == 'boolean' %}
+        {{ form.boolean(field) }}
+    {% elseif field.type == 'datetime' %}
+        {{ form.datetime(field) }}
+    {% elseif field.type == 'array' %}
+        {{ form.array(field) }}
+    {% elseif field.tag == 'input' and field.type == 'file' %}
+        {{ form.inputFile(field) }}
+    {% elseif field.tag == 'input' %}
+        {{ form.input(field) }}
+    {% else %}
+        <!-- no plan in place for rendering this form input -->
+    {% endif %}
+
+{% endmacro %}
+{% macro input(field) %}
+    <div class="form-group">
+        <label for="{{ field.id }}">{{ field.label }}</label>
+
+        <input id='{{ field.id }}'
+               class="form-control"
+               type="{{ field.type ?? 'text' }}"
+               autocomplete="off"
+               name="{{ field.name }}"
+               value="{{ field.value ? field.value: '' }}"
+                {{ field.placeholder ? ' placeholder="'~field.placeholder~'" ' : '' }}
+                {{ field.required ? 'required ' : '' }}
+                {{ field.readOnly ? ' readonly ' : '' }}
+                {{ field.step ? ' step='~field.step: '' }}
+        >
+    </div>
+{% endmacro %}
+{% macro inputFile(field) %}
+    <div class="form-group">
+        <label for="{{ field.id }}">{{ field.label }}</label>
+        <img class="img-responsive" onclick="$('#{{ field.id }}').click()" style="margin:0 auto;" src="data:image/png;base64,{{ field.value|base64 }}"/>
+        <input id='{{ field.id }}'
+               class="form-control"
+               type="file"
+               {% if not field.readOnly %}name="{{ field.name }}"{% endif %}
+                {{ field.required ? 'required ' : '' }}
+                {{ field.readOnly ? ' readonly ' : '' }}
+        >
+    </div>
+{% endmacro %}
+{% macro password(field) %}
+    <div class="form-group">
+        <label for="{{ field.id }}">{{ field.label }}</label>
+        <input id='{{ field.id }}'
+               autocomplete="off"
+               class="form-control"
+               data-name="{{ field.name }}"
+               onchange="this.setAttribute('name',this.getAttribute('data-name'))"
+               type="password"
+                {{ field.placeholder ? '  placeholder="'~field.placeholder~'" ' : '' }}
+        >
+    </div>
+{% endmacro %}
+{% macro textarea(field) %}
+    <div class='form-group'>
+        <label for='{{ field.id }}'>{{ field.label }}</label>
+        <textarea
+                class='form-control'
+                id='{{ field.id }}'
+                placeholder='{{ field.placeholder }}'
+                name='{{ field.name }}'
+                {{ field.required ? 'required' :'' }}
+                {{ field.readonly ? 'readonly' :'' }}
+        >{{ field.value }}</textarea>
+    </div>
+{% endmacro %}
+{% macro checkbox(field) %}
+    <div class='checkbox'>
+        <label>
+            <input
+                    id="{{ field.id }}"
+                    type='checkbox'
+                    name='{{ field.name }}'
+                    {{ field.checked ?? checked }}
+                    {{ field.readonly ?? readonly }}
+            >{{ field.text ?? field.name }}
+        </label>
+    </div>
+{% endmacro %}
+{% macro boolean(field) %}
+    <div class="form-group">
+        <label for='{{ field.id }}'>{{ field.name }}</label>
+        <br />
+        <div class="btn-group" id='{{ field.id }}' data-toggle="buttons">
+            <label class="btn btn-default {{ field.value ? 'active' : '' }}">
+                <input
+                        type="radio"
+                        value='1'
+                        name="{{ field.name }}"
+                        autocomplete="off"
+                        {{ field.required ?? 'required' }}
+                        {{ field.readonly ?? 'readonly' }}
+                        {{ field.value ? 'checked' : '' }}
+                > True
+            </label>
+            <label class="btn btn-default {{ field.value ? '' : 'active' }}">
+                <input
+                        type="radio" value="0"
+                        name="{{ field.name }}"
+                        autocomplete="off"
+                        {{ field.readonly ?? 'readonly' }}
+                        {{ field.required ?? 'required' }}
+                        {{ field.value ? '' : 'checked' }}
+                > False
+            </label>
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro select(field) %}
+<div class="form-group">
+
+    {% if field.type == 'multiple' %}
+        {% set multiple = true %}
+    {% else %}
+        {% set multiple = false %}
+    {% endif %}
+
+    <label for="{{ field.id }}">{{ field.label }}</label>
+    <select
+            id='{{ field.id }}'
+            class='form-control'
+            name='{{ field.name }}{{ field.type == 'multiple' ? '[]' :'' }}'
+            {{ field.type == 'multiple' ? 'multiple' : '' }}
+            {{ field.required ?? 'required' }}
+    >
+        {{ field.multiple ? '' : '<option selected disabled>Please make a selection</option>'|raw }}
+        {% for option in field.options %}
+            <option
+                    value='{{ option.value }}'
+                    data-optGroup="{{ option.optionGroup }}"
+                    {{ option.selected ? 'selected' : '' }}
+                    {{ option.disabled ? 'disabled' : ''}}
+            >{{ option.text ? option.text : option.value }}
+            </option>
+        {% endfor %}
+    </select>
+</div>
+
+{% endmacro %}
+
+{% macro datetime(field) %}
+    <div class="form-group">
+        <label for="{{ field.id }}">{{ field.label }}</label>
+        <input id='{{ field.id }}'
+               class="form-control"
+               type="datetime-local"
+               name="{{ field.name }}"
+               value="{{ field.value ? dateTime(field.value).format('Y-m-d H:i:s') : '' }}"
+               placeholder="{{ field.placeholder }}"
+                {{ field.required ? 'required' : '' }}
+                {{ field.readOnly ? ' readonly' : '' }}
+        >
+    </div>
+{% endmacro %}
+{% macro array(field) %}
+    <div class="form-group">
+        <label for="{{ field.id }}">{{ field.label }}</label>
+        {% if field.value %}
+            {% for val in field.value %}
+                <div class="input-group">
+                    <span class="input-group-addon" onclick="this.parentNode.parentNode.removeChild(this.parentNode);">X</span>
+                    <input
+                           class="form-control"
+                           type="text"
+                           name="{{ field.name }}[]"
+                           value="{{ class(val) == 'DateTime' ? dateTime(field.value) : val }}"
+                           placeholder="{{ field.placeholder }}"
+                    >
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="input-group">
+                <span class="input-group-addon" onclick="this.parentNode.parentNode.removeChild(this.parentNode);">X</span>
+                <input
+                       class="form-control"
+                       type="text"
+                       name="{{ field.name }}[0]"
+                       placeholder="{{ field.placeholder }}"
+                >
+            </div>
+        {% endif %}
+        <button
+                class="btn btn-success"
+                type="button"
+                onclick="var lastOne=$('[data-fieldGroup=\'{{ field.name }}\']').last();var id= (lastOne.length)? parseInt(lastOne.attr('data-fieldIndex')) + 1 : 0;$('' +
+                        '<div class=\'input-group\'>' +
+                        '<span class=\'input-group-addon\' onclick=\'this.parentNode.parentNode.removeChild(this.parentNode);\'>X</span>' +
+                        '<input class=\'form-control\' type=\'text\' name=\'{{ field.name }}[]\' placeholder=\'{{ field.placeholder }}\'>'+
+                        '</div>' +
+                        '').insertBefore(this);"
+        >Add <span class="glyphicon glyphicon-plus"></span></button>
+
+    </div>
+{% endmacro %}

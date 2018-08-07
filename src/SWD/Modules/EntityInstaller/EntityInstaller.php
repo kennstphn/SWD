@@ -9,8 +9,12 @@ use SWD\Website\Website;
 class EntityInstaller extends Module
 {
     const PREFERRED_HOOK = Website::INIT_DONE;
+    static $install = false;
     
-    
+    static protected $classList;
+    static function addEntityClass($class){
+        array_push(self::$classList, $class);
+    }
 
     function __invoke(string $hookName, Website $website)
     {
