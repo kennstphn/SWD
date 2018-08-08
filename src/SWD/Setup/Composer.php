@@ -10,7 +10,8 @@ class Composer
         // install templates
         // install App Directories
 
-        $assumeLoc = str_replace('/src/SWD/Setup/Composer.php','',__FILE__);
+        $vendorPath = $event->getComposer()->getConfig()->get('vendor-dir');
+        $assumeLoc = dirname($vendorPath);
 
         $tmplDir =$assumeLoc.'/templates';
         if ( ! is_dir($tmplDir)){
