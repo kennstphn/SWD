@@ -24,10 +24,5 @@
     "gabrielbull/ups-api": "^0.8.0",
     "vinceg/usps-php-api": "^1.0",
     "league/iso3166": "^2.1"
-  },
-  "scripts":{
-    "post-dependencies-solving": [
-      "SWD\\Setup\\Composer::postDependenciesSolving"
-    ]
   }
 }
