@@ -12,20 +12,20 @@ class Composer
 
         $assumeLoc = str_replace('/src/SWD/Setup/Composer.php','',__FILE__);
 
-        $dir =$event->getIO()->ask('please enter the location of the "templates" directory. This should be beside your src and vendor directories'.PHP_EOL,$assumeLoc.'/templates');
-        if ( ! is_dir($dir)){
-            $success = mkdir($dir);
-            if ( ! $success){throw new \Exception('Unable to create directory '.$dir);}
+        $tmplDir =$assumeLoc.'/templates';
+        if ( ! is_dir($tmplDir)){
+            $success = mkdir($tmplDir);
+            if ( ! $success){throw new \Exception('Unable to create directory '.$tmplDir);}
         }
 
         $src = str_replace('Composer.php', 'templates', __FILE__);
         foreach(scandir($src) as $file){
             if( in_array($file, ['.', '..'])){continue;}
-            copy($src.'/'.$file,$dir.'/'.$file);
+            copy($src.'/'.$file,$tmplDir.'/'.$file);
         }
 
 
-        $appDir = $event->getIO()->ask('Enter the location of your Autoloaded App Directory'.PHP_EOL,$assumeLoc.'/src/App');
+        $appDir = $assumeLoc.'/src/App';
 
         if (! is_dir($appDir)){
             if ( ! mkdir($appDir)){throw new \Exception('unable to make missing directory '.$appDir);}
@@ -49,14 +49,16 @@ class Composer
                 'user():string;',
                 'password():string;',
                 'dbname():string;',
-                'entityDirectory():string;'
+                'entityDirectory():string;',
+                'abstract'
             ],[
                 'namespace App\Factories',
                 'class EntityManagerFactory',
-                'user():string{return '.$user.'; }',
-                'password():string{return '.$password.'; }',
-                'dbname():string{return '.$dbName.'; }',
-                'entityDirectory():string{ return '.$appDir.'/Entities'.';}'
+                'user():string{return \''.$user.'\'; }',
+                'password():string{return \''.$password.'\'; }',
+                'dbname():string{return \''.$dbName.'\'; }',
+                'entityDirectory():string{ return \''.$appDir.'/Entities\' ;}',
+                ''
             ],file_get_contents($file));
 
             file_put_contents($appDir . '/Factories/EntityManagerFactory.php', $file);
