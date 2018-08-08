@@ -1,11 +1,12 @@
 <?php
 namespace SWD\Setup;
+use Composer\Command\UpdateCommand;
 use SWD\Factories\EntityManagerFactory;
 
 class Composer
 {
 
-    static function postDependenciesSolving($event ){
+    static function postUpdateCmd(UpdateCommand $event){
         // install templates
         // install App Directories
 
@@ -69,12 +70,6 @@ class Composer
         }
         file_put_contents($assumeLoc.'/public_html/index.php',self::getIndexPage());
 
-    }
-
-    static function postUpdateCmd(){
-        //todo
-
-        //review templates for updates
     }
 
     protected static function getIndexPage(){
