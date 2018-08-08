@@ -1,14 +1,15 @@
 <?php
 namespace SWD\Setup;
-use Composer\Command\UpdateCommand;
+use Composer\Script\Event;
 use SWD\Factories\EntityManagerFactory;
 
 class Composer
 {
 
-    static function postUpdateCmd(UpdateCommand $event){
+    static function postUpdateCmd($event){
         // install templates
         // install App Directories
+        /** @var Event $event */
 
         $vendorPath = $event->getComposer()->getConfig()->get('vendor-dir');
         $assumeLoc = dirname($vendorPath);
