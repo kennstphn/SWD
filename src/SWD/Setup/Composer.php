@@ -6,7 +6,7 @@ use SWD\Factories\EntityManagerFactory;
 class Composer
 {
 
-    static function postPackageInstall(PackageEvent $event ){
+    static function postDependenciesSolving(PackageEvent $event ){
         // install templates
         // install App Directories
 
