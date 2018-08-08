@@ -13,7 +13,6 @@
 
     <!-- Bootstrap -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
-    <link href="//{{ domain }}/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="//{{ domain }}{{ css('/css/style.css') }}" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -25,8 +24,6 @@
 
     <script type="text/javascript" src="//{{ domain }}{{ js('/js/script.js') }}"></script>
 
-    <!--   <link rel="stylesheet" href="/style3.css" type="text/css" media="screen" />
-        <link rel="stylesheet" href="/common.css" type="text/css" media="screen" />-->
 
     <!-- google analytics -->
     {% if response.meta.googleTrackingCode %}
@@ -198,8 +195,6 @@
         for (i = 0, c = a.length; i < c; i++) {a[i].setAttribute("href", a[i].getAttribute("data-href"));}
     })();
 </script>
-<!--https://github.com/medialize/URI.js-->
-<script src="//{{ domain }}{{ js('/js/uri.js') }}"></script>
 {% block javascript %}{% endblock %}
 </body>
 </html>
