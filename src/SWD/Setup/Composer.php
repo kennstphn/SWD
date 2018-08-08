@@ -1,12 +1,12 @@
 <?php
 namespace SWD\Setup;
-use Composer\Installer\PackageEvent;
+use Composer\Installer\InstallerEvent;
 use SWD\Factories\EntityManagerFactory;
 
 class Composer
 {
 
-    static function postDependenciesSolving(PackageEvent $event ){
+    static function postDependenciesSolving(InstallerEvent $event ){
         // install templates
         // install App Directories
 
