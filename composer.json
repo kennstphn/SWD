@@ -25,7 +25,9 @@
     "vinceg/usps-php-api": "^1.0",
     "league/iso3166": "^2.1"
   },
-  "post-dependencies-solving": [
-    "SWD\\Setup\\Composer::postPackageInstall"
-  ]
+  "scripts":{
+    "post-dependencies-solving": [
+      "SWD\\Setup\\Composer::postPackageInstall"
+    ]
+  }
 }
