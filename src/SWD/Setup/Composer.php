@@ -18,7 +18,7 @@ class Composer
         }
 
         $src = str_replace('Composer.php', 'templates', __FILE__);
-        while($file = scandir($src)){
+        foreach(scandir($src) as $file){
             if( in_array($file, ['.', '..'])){continue;}
             copy($src.'/'.$file,$dir.'/'.$file);
         }
