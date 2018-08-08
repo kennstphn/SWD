@@ -1,6 +1,29 @@
 {
+  "name": "shermanwebdesign/swd",
+  "description": "Sherman Web Design",
+  "minimum-stability": "dev",
+  "license": "wtfpl",
+  "authors": [
+    {
+      "name": "Ken Sherman",
+      "email": "ken@shermanwebdesign.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "SWD\\": "src/SWD"
+    }
+  },
   "require": {
-    "shermanwebdesign/swd":"dev-master"
+    "twig/twig": "^2.4",
+    "doctrine/orm": "^2.5",
+    "phpmailer/phpmailer": "^6.0",
+    "curl/curl": "^1.8",
+    "ezyang/htmlpurifier": "^4.9",
+    "php-http/guzzle6-adapter": "^1.1",
+    "gabrielbull/ups-api": "^0.8.0",
+    "vinceg/usps-php-api": "^1.0",
+    "league/iso3166": "^2.1"
   },
   "scripts":{
     "post-dependencies-solving": [
