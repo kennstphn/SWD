@@ -27,7 +27,7 @@
   },
   "scripts":{
     "post-dependencies-solving": [
-      "SWD\\Setup\\Composer::postPackageInstall"
+      "SWD\\Setup\\Composer::postDependenciesSolving"
     ]
   }
 }
