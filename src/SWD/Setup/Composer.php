@@ -10,8 +10,9 @@ class Composer
         // install templates
         // install App Directories
 
+        $assumeLoc = str_replace('/src/SWD/Setup/Composer.php','',__FILE__);
 
-        $dir =$event->getIO()->ask('please enter the location of the "templates" directory. This should be beside your src and vendor directories',getcwd().'/templates');
+        $dir =$event->getIO()->ask('please enter the location of the "templates" directory. This should be beside your src and vendor directories'.PHP_EOL,$assumeLoc.'/templates');
         if ( ! is_dir($dir)){
             $success = mkdir($dir);
             if ( ! $success){throw new \Exception('Unable to create directory '.$dir);}
@@ -24,7 +25,7 @@ class Composer
         }
 
 
-        $appDir = $event->getIO()->ask('Enter the location of your Autoloaded App Directory');
+        $appDir = $event->getIO()->ask('Enter the location of your Autoloaded App Directory'.PHP_EOL,$assumeLoc.'/src/App');
 
         if (! is_dir($appDir)){
             if ( ! mkdir($appDir)){throw new \Exception('unable to make missing directory '.$appDir);}
@@ -36,10 +37,10 @@ class Composer
             }
         }
 
-        if($event->getIO()->askConfirmation('would you like to create App\\Factories\\EntityManagerFactory now?')){
-            $user = $event->getIO()->ask('please enter the username to use for mysql');
-            $password = $event->getIO()->ask('please enter the password to use for mysql');
-            $dbName = $event->getIO()->ask('please enter the database name to use for mysql');
+        if($event->getIO()->askConfirmation('would you like to create App\\Factories\\EntityManagerFactory now?'.PHP_EOL)){
+            $user = $event->getIO()->ask('please enter the username to use for mysql'.PHP_EOL);
+            $password = $event->getIO()->ask('please enter the password to use for mysql'.PHP_EOL);
+            $dbName = $event->getIO()->ask('please enter the database name to use for mysql'.PHP_EOL);
 
             $file = EntityManagerFactory::$file;
             $file = str_replace([
