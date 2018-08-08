@@ -64,6 +64,9 @@ class Composer
             file_put_contents($appDir . '/Factories/EntityManagerFactory.php', $file);
         }
 
+        if( ! is_dir($assumeLoc.'/public_html')){
+            mkdir($assumeLoc.'/public_html');
+        }
         file_put_contents($assumeLoc.'/public_html/index.php',self::getIndexPage());
 
     }
