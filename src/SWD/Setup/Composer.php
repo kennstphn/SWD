@@ -26,6 +26,9 @@ class Composer
             copy($src.'/'.$file,$tmplDir.'/'.$file);
         }
 
+        if ( ! is_dir($assumeLoc.'/src')){
+            mkdir($assumeLoc.'/src');
+        }
 
         $appDir = $assumeLoc.'/src/App';
 
