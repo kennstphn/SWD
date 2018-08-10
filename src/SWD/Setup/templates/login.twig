@@ -1,0 +1,22 @@
+{% extends 'index.twig' %}
+{% set title = 'Login' %}
+{% block navigation %}{% endblock %}
+{% block content %}
+
+    <form action="{{ request.get.containsKey('redirect') ? '?redirect='~request.get.redirect : '' }}{% if request.get.containsKey('redirectParams') %}{% for key,val in request.get.get('redirectParams') %}&redirectParams[{{ key }}]={{ val }}{% endfor %}{% endif %}"
+          method="post"
+          role="form">
+        <input type="hidden" name="antiCsrfToken" value="{{ response.meta.antiCsrfToken }}">
+        <div class="form-group">
+            <label for="">Username</label>
+            <input type="text" class="form-control" name="username" autofocus placeholder="Username...">
+        </div>
+        <div class="form-group">
+            <label for="">Password</label>
+            <input type="password" class="form-control" name="password" placeholder="Password...">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+
+{% endblock %}

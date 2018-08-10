@@ -1,7 +1,9 @@
 <?php
 namespace App\Entities;
 use App\Entities\Blog\Article;
+use App\Entities\Blog\Categories;
 use SWD\Entities\SeoPage;
+use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 
 class Sitemap extends \SWD\Entities\Sitemap
 {
@@ -17,6 +19,7 @@ class Sitemap extends \SWD\Entities\Sitemap
         $b->addDiscriminatorMapClass('page', Page::class);
         $b->addDiscriminatorMapClass('sitemap', self::class);
         $b->addDiscriminatorMapClass('article',Article::class);
+        $b->addDiscriminatorMapClass('categories',Categories::class);
     }
 
 

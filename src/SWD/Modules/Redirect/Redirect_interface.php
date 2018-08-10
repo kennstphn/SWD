@@ -4,7 +4,7 @@ namespace SWD\Modules\Redirect;
 
 interface Redirect_interface
 {
-    const ClASSNAME = 'App\\Entities\\Redirect';
+    const CLASSNAME = 'App\\Entities\\Redirect';
     function getFrom();
     
     function getTo();

@@ -22,18 +22,18 @@ class Redirect extends Module
                 );
             });
         }
-        if ( ! class_exists(Redirect_interface::ClASSNAME)){
+        if ( ! class_exists(Redirect_interface::CLASSNAME)){
             return;
         }
-        if ( ! in_array(Redirect_interface::class, class_implements(Redirect_interface::ClASSNAME))){
-            trigger_error(Redirect_interface::ClASSNAME . ' does not implement ' . Redirect_interface::class.'. Redirect module not able to run. ',E_USER_NOTICE);
+        if ( ! in_array(Redirect_interface::class, class_implements(Redirect_interface::CLASSNAME))){
+            trigger_error(Redirect_interface::CLASSNAME . ' does not implement ' . Redirect_interface::class.'. Redirect module not able to run. ',E_USER_NOTICE);
             return;
         }
         
         $this->website = $website;
         try{
             $redirect = EntityManagerFactory::create()->createQueryBuilder()
-                ->select('r')->from(Redirect_interface::class, 'r')
+                ->select('r')->from(Redirect_interface::CLASSNAME, 'r')
                 ->where('r.from = :url')->setParameter('url', $website->request()->url())
                 ->getQuery()->getSingleResult();
         }catch (NoResultException $e ){
