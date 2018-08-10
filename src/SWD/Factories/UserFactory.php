@@ -8,10 +8,19 @@ use App\Factories\EntityManagerFactory;
 use SWD\Modules\AccessControl\User_interface;
 use SWD\Modules\AccessControl\UserFactory_interface;
 use SWD\Request\Request_interface;
+use SWD\Request\UrlParserFactory;
 
-abstract class UserFactory implements UserFactory_interface
+class UserFactory implements UserFactory_interface
 {
     const STORED_USER_KEY = 'user';
+    protected static $entityActions =  ['create','edit','delete','group','search'] ;
+
+    static function getUserClass():string
+    {
+        return 'App\\Entities\\User';
+    }
+
+
 
     static function getGuestUser(EntityManager $em):User_interface
     {
@@ -67,6 +76,28 @@ abstract class UserFactory implements UserFactory_interface
         $count = $em->createQueryBuilder()->select('count(e.id)')->from($class,'e')
             ->where('e.loc = :url')->setParameter('url', $request->url()->__toString())
             ->getQuery()->getSingleScalarResult();
+
+        //allow non-entityAction requests to /sitemap.xml
+        if (
+            $request->url()->__toString() === '/sitemap.xml'
+            || $request->url()->__toString() === '/sitemap'
+        ){
+            return true;
+        }
+
+        if (
+            $request->url()->__toString() === 'robots.txt'
+        ){return true;}
+
+        //allow non-entityAction requests to /file
+        $parser = UrlParserFactory::create($request);
+        if (
+            $request->url()->first() == 'file'
+            && ! in_array($parser->getAction(), self::$entityActions)
+        ){
+            return true;
+        }
+
 
 
         if ( $count == 0 && strtolower($user->getUsername()) == 'guest'){

@@ -77,9 +77,9 @@
                                     <a href="//{{ domain }}/"><i class="fa fa-home" aria-hidden="true"></i></a>
                                 </li>
                                 {% for nav in template.navigation %}
-                                    {% if nav.dotClass = 'SWD.Structures.Navigation.Single' %}
+                                    {% if nav.dotClass == 'SWD.Structures.Navigation.Single' %}
                                         <li><a href="//{{ domain }}{{ nav.link }}">{{ nav.text }}</a></li>
-                                    {% elseif nav.dotClass = 'SWD.Structures.Navigation.Collection' %}
+                                    {% elseif nav.dotClass == 'SWD.Structures.Navigation.Collection' %}
                                         <li>
                                             <a href="{{ nav.link }}" data-toggle="dropdown" class="dropdown-toggle">{{ nav.text }}<i
                                                         class="fa fa-angle-down" aria-hidden="true"></i></a>

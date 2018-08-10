@@ -88,6 +88,23 @@ class Login implements ControlledUrl_interface, Controller_interface
         //success!
         $factory = AccessControl::getUserFactory();
         $factory::setPersistantUser($user);
+
+        if (
+           $this->request->get()->containsKey('redirect')
+        ){
+            $params = '';
+            if($this->request->get()->containsKey('redirectParams')){
+                $first = true;
+                foreach($this->request->get()->get('redirectParams') as $key => $val){
+                    $params .= $first ? '?':'&';
+                    $params.=$key.'='.$val;
+
+                    $first=false;
+                }
+            }
+            $this->response->setRedirect($this->request->get()->get('redirect').$params, 302);
+            return;
+        }
     }
 
 }

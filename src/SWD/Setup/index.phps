@@ -2,7 +2,7 @@
 include_once '../vendor/autoload.php';
 spl_autoload_register(function($class){
     $relfile = str_replace('\\','/',$class).'.php';
-    $directory = str_replace('public', 'src', __DIR__);
+    $directory = str_replace('public_html', 'src', __DIR__);
     $file = str_replace('//', '/', $directory.'/'.$relfile);
     if($relfile == 'SWD/Modules/TwigRenderer/Twig.php'){
         @include_once $file;return; // patch for renderer call interface inconsistency
