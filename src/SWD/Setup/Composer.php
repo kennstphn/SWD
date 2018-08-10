@@ -33,7 +33,7 @@ class Composer
             $srcDirectory = str_replace('Composer.php', 'templates', __FILE__);
             foreach(scandir($srcDirectory) as $file){
                 if( in_array($file, ['.', '..'])){continue;}
-                $writeFile($tmplDir.'/default',$srcDirectory.'/'.$file);
+                $writeFile($tmplDir.'/default',$file,file_get_contents($srcDirectory.'/'.$file));
             }
         };
         $importTemplates();
@@ -115,9 +115,9 @@ class Composer
         $copyFilesFromSiblingDir=function($siblingDir, $callableForNested)use($writeFile,$assumeLoc){
             $srcFolder = str_replace('Composer.php', $siblingDir, __FILE__);
             $files = scandir($srcFolder);
-            array_filter($files,function($f){return ! in_array($f,['.','..']);});
-            
+
             foreach($files as $file){
+                if(in_array($file,['.','..'])){continue;}
                 $srcFile = $srcFolder.'/'.$file;
                 if ( is_dir($srcFile)){
                     $callableForNested($siblingDir.'/'.$file, $callableForNested);
