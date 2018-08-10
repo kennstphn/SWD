@@ -31,7 +31,10 @@ class ArgumentList
         if( $checkArrayCount && $c !== count($urlPieces)){return false;}
 
         for ($i=0;$i<$c;$i++){
-            if ( ! $this->isMatching($checkList[$i], $urlPieces[$i])){return false;}
+            $check = array_key_exists($i, $checkList)? $checkList[$i] : null;
+            $against = array_key_exists($i, $urlPieces) ?$urlPieces[$i] : null;
+            if(is_null($check) || is_null($against)){return false;}
+            if ( ! $this->isMatching($check, $against)){return false;}
         }
 
         return true;

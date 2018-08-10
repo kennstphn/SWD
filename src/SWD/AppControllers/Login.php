@@ -108,6 +108,10 @@ class Login implements ControlledUrl_interface, Controller_interface
             }
             $this->response->setRedirect($this->request->get()->get('redirect').$params, 302);
             return;
+        }else{
+            if( ! $this->request->get()->getBool('json')){
+                $this->response->setRedirect('/');
+            }
         }
     }
 

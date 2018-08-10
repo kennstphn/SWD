@@ -37,7 +37,7 @@ class TwigTemplateFunctions extends Module
     protected function addFunctionsToTwig(\Twig_Environment $twig, Website $website){
         $entityManager = EntityManagerFactory::create();
 
-        $twig->addFunction(new \Twig_Function('css', function ($link) {
+        $twig->addFunction(new \Twig_SimpleFunction('css', function ($link) {
             $fileLink = str_replace('//','/',getcwd().$link);
             if (file_exists($fileLink)) {
                 return str_replace(
@@ -49,12 +49,12 @@ class TwigTemplateFunctions extends Module
             return $link;
         }));
 
-        $twig->addFunction(new \Twig_Function('metadata',function($entity){
+        $twig->addFunction(new \Twig_SimpleFunction('metadata',function($entity){
             $metadata = EntityManagerFactory::create()->getClassMetadata(is_string($entity) ? $entity : get_class($entity));
             return $metadata;
         }));
 
-        $twig->addFunction(new \Twig_Function('js', function ($link) {
+        $twig->addFunction(new \Twig_SimpleFunction('js', function ($link) {
             $fileLink = str_replace('//','/',getcwd().$link);
             if (file_exists($fileLink)) {
                 return str_replace(
@@ -66,10 +66,10 @@ class TwigTemplateFunctions extends Module
             return $link;
         }));
 
-        $twig->addFunction(new \Twig_Function('json', 'json_encode'));
+        $twig->addFunction(new \Twig_SimpleFunction('json', 'json_encode'));
         $twig->addFilter(TwigFilterCollection::base64());
 
-        $twig->addFunction(new \Twig_Function('entityMetadataList',function(){
+        $twig->addFunction(new \Twig_SimpleFunction('entityMetadataList',function(){
             $classList = EntityManagerFactory::listEntityClasses();
             $em = EntityManagerFactory::create();
             $array = [];
@@ -79,7 +79,7 @@ class TwigTemplateFunctions extends Module
             return $array;
         }));
 
-        $twig->addFunction(new \Twig_Function('api',function($url, $get = array()){
+        $twig->addFunction(new \Twig_SimpleFunction('api',function($url, $get = array()){
             $request = Request::create(array(
                 'server'=>array_merge($this->server, array('REQUEST_METHOD'=>'GET','REQUEST_URI'=>$url)),
                 'get'=>$get
@@ -92,13 +92,13 @@ class TwigTemplateFunctions extends Module
         }));
 
 
-        $twig->addFunction(new \Twig_Function('formFields',function ($entity,$includeAssociations = false) use ($entityManager){
+        $twig->addFunction(new \Twig_SimpleFunction('formFields',function ($entity,$includeAssociations = false) use ($entityManager){
             $parser = new FormParser($entity, $entityManager);
             
             return $parser->getFormFields();
         }));
 
-        $twig->addFunction(new \Twig_Function('cacheBust',function($relativeToHome){
+        $twig->addFunction(new \Twig_SimpleFunction('cacheBust',function($relativeToHome){
             $file = getcwd().$relativeToHome;
             $mtime = file_exists($file) ? '/'.filemtime($file) : '/000000000';
             $pos = strpos($relativeToHome, '/', 1);
@@ -111,7 +111,7 @@ class TwigTemplateFunctions extends Module
             $twig->addGlobal('currentUser', $userFactory::getCurrentUser($website->request()));
         }
 
-        $twig->addFunction(new \Twig_Function('groupBy', function ($entityClass, $att){
+        $twig->addFunction(new \Twig_SimpleFunction('groupBy', function ($entityClass, $att){
             $entityClass = is_string($entityClass) ? str_replace(['..','.'], ['.','\\'], $entityClass) : $entityClass;
             $attributeList = array_slice(func_get_args(), 1);
             $entityClass = is_object($entityClass) ? get_class($entityClass) : $entityClass;

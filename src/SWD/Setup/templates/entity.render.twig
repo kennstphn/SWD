@@ -14,9 +14,9 @@
             <h3 class="panel-title">
                 {{ entity.name ?? entity.id }}  <span class="small">{{ class(entity) }}</span>
                 <div class="btn-group pull-right">
-                    <a type="button" href="{{ class(entity)|replace({'App\\Entities\\':'/'}) ~'/'~entity.id }}" class="btn btn-default">VIEW</a>
-                    <a type="button" href="{{ class(entity)|replace({'App\\Entities\\':'/'})~'/'~entity.id~'/edit' }}" class="btn btn-default">EDIT</a>
-                    <a type="button" href="javascript:if(window.confirm('are you sure you want to delete {{ entity.name }}?')){$.post('{{ class(entity)|replace({'App\\Entities\\':'/',"\\":'/'})~'/'~entity.id~'/delete' }}?json',{antiCsrfToken:token}).done(function(){window.location.href='{{ class(entity)|replace({'App\\Entities\\':'/',"\\":"/"}) ~'/' }}';});};" class="btn btn-warning">DELETE</a>
+                    <a role="button" href="{{ class(entity)|replace({'App\\Entities\\':'/'}) ~'/'~entity.id }}" class="btn btn-success">VIEW</a>
+                    <a role="button" href="{{ class(entity)|replace({'App\\Entities\\':'/'})~'/'~entity.id~'/edit' }}" class="btn btn-primary">EDIT</a>
+                    <a role="button" href="javascript:if(window.confirm('are you sure you want to delete {{ entity.name }}?')){$.post('{{ class(entity)|replace({'App\\Entities\\':'/',"\\":'/'})~'/'~entity.id~'/delete' }}?json',{antiCsrfToken:token}).done(function(){window.location.href='{{ class(entity)|replace({'App\\Entities\\':'/',"\\":"/"}) ~'/' }}';});};" class="btn btn-warning">DELETE</a>
                 </div>
                 <div class="clearfix">
 
@@ -96,11 +96,11 @@
         <td>
             {% set e = attribute(entity,map.fieldName) %}
             {% if e is null and map.isOwningSide == false %}
-                <a type="button"  class="btn btn-default" href="{{ domain ~ '/api/'~map.fieldName|replace({'App\\Entities\\':'','\\':'/'}) ~'/create' }}">Create</a>
+                <a role="button"  class="btn btn-default" href="{{ domain ~ '/api/'~map.fieldName|replace({'App\\Entities\\':'','\\':'/'}) ~'/create' }}">Create</a>
             {% elseif e is null and map.isOwningSide %}
-                <a type="button" class="btn btn-default disabled"  href="#">{{ '( none )'|e }}</a>
+                <a role="button" class="btn btn-default disabled"  href="#">{{ '( none )'|e }}</a>
             {% else %}
-                <a type="button" class="btn btn-default" href="/{{ class(e)|replace({'App\\Entities\\':'','DoctrineProxies\\__CG__\\':'','\\':'/'}) }}/{{ e.id }}">View <span class="badge">{{ e.name ?? ('ID:'~e.id) }}</span> </a>
+                <a role="button" class="btn btn-default" href="/{{ class(e)|replace({'App\\Entities\\':'','DoctrineProxies\\__CG__\\':'','\\':'/'}) }}/{{ e.id }}">View <span class="badge">{{ e.name ?? ('ID:'~e.id) }}</span> </a>
             {% endif %}
         </td>
     </tr>
@@ -112,7 +112,7 @@
         <td>{{ map.fieldName }}</td>
         <td>{{ map.targetEntity|replace({'App\\Entities\\':''}) }}</td>
         <td>
-            <a type="button" class="btn btn-default" href="{{ entityCard.viewUrl(entity,map) }}"> List <span class="badge">{{ attribute(entity,map.fieldName).count ?? 0 }}</span> </a>
+            <a type="role" class="btn btn-default" href="{{ entityCard.viewUrl(entity,map) }}"> List <span class="badge">{{ attribute(entity,map.fieldName).count ?? 0 }}</span> </a>
         </td>
     </tr>
 {% endmacro %}

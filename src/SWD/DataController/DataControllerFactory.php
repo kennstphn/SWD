@@ -45,7 +45,22 @@ class DataControllerFactory implements ControllerFactory_interface, Controller_i
         //CONTROLLER Path --> App\Entities\{Entity_Name}
         $class = $parser->getEntityClass();
 
-        if ( ! $class){return ;}
+        if ( ! $class){
+            if ( $this->response->isOk() &&  (! $this->response->hasData() && ! $this->response->hasTemplate() ) ){
+                try{
+                    $page = \App\Factories\EntityManagerFactory::create()->createQueryBuilder()
+                        ->select('p')->from(\App\Entities\Page::class, 'p')
+                        ->where('p.loc = :url')->setParameter('url', $this->request->url()->__toString())
+                        ->getQuery()->getSingleResult();
+                    $this->response->setData($page);
+                    $this->response->setResponseCode(200);
+                    $this->response->setTemplate('page.twig');
+                    return;
+                }catch ( \Doctrine\ORM\NoResultException $e){
+                    //$response->setResponseCode(404);
+                }
+            }
+            return ;}
 
         if ( in_array(ControlledUrl_interface::class, class_implements($class))){
             /** @var ControlledUrl_interface $class */
@@ -55,22 +70,7 @@ class DataControllerFactory implements ControllerFactory_interface, Controller_i
 
         $controller = new EntityController($class, $this->request, $this->response);
         $controller();
-
-
-        if ( $this->response->isOk() &&  (! $this->response->hasData() && ! $this->response->hasTemplate() ) ){
-            try{
-                $page = \App\Factories\EntityManagerFactory::create()->createQueryBuilder()
-                    ->select('p')->from(\App\Entities\Page::class, 'p')
-                    ->where('p.loc = :url')->setParameter('url', $this->request->url()->__toString())
-                    ->getQuery()->getSingleResult();
-                $this->response->setData($page);
-                $this->response->setResponseCode(200);
-                $this->response->setTemplate('index.twig');
-                return;
-            }catch ( \Doctrine\ORM\NoResultException $e){
-                //$response->setResponseCode(404);
-            }
-        }
+        
     }
     
 }

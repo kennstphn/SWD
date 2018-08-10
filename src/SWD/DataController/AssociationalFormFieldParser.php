@@ -81,6 +81,7 @@ class AssociationalFormFieldParser
         }
 
         $selectedEntities = call_user_func( array($entity,$getField) );
+        if( is_null($selectedEntities) ) {return;}
 
         //make $selectedEntities iterate-able if it's a one-to-one or many-to-one
         $selectedEntities = (

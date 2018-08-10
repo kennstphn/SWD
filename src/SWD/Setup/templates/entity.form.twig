@@ -56,7 +56,9 @@
 {% macro inputFile(field) %}
     <div class="form-group">
         <label for="{{ field.id }}">{{ field.label }}</label>
-        <img class="img-responsive" onclick="$('#{{ field.id }}').click()" style="margin:0 auto;" src="data:image/png;base64,{{ field.value|base64 }}"/>
+        {% if field.value %}
+            <img class="img-responsive" onclick="$('#{{ field.id }}').click()" style="margin:0 auto;" src="data:image/png;base64,{{ field.value|base64 }}"/>
+        {% endif %}
         <input id='{{ field.id }}'
                class="form-control"
                type="file"
@@ -186,8 +188,8 @@
         <label for="{{ field.id }}">{{ field.label }}</label>
         {% if field.value %}
             {% for val in field.value %}
-                <div class="input-group">
-                    <span class="input-group-addon" onclick="this.parentNode.parentNode.removeChild(this.parentNode);">X</span>
+                <div class="input-group-prepend">
+                    <span class="input-group-text" onclick="this.parentNode.parentNode.removeChild(this.parentNode);">X</span>
                     <input
                            class="form-control"
                            type="text"
@@ -198,8 +200,8 @@
                 </div>
             {% endfor %}
         {% else %}
-            <div class="input-group">
-                <span class="input-group-addon" onclick="this.parentNode.parentNode.removeChild(this.parentNode);">X</span>
+            <div class="input-group-prepend">
+                <span class="input-group-text" onclick="this.parentNode.parentNode.removeChild(this.parentNode);">X</span>
                 <input
                        class="form-control"
                        type="text"
@@ -212,8 +214,8 @@
                 class="btn btn-success"
                 type="button"
                 onclick="var lastOne=$('[data-fieldGroup=\'{{ field.name }}\']').last();var id= (lastOne.length)? parseInt(lastOne.attr('data-fieldIndex')) + 1 : 0;$('' +
-                        '<div class=\'input-group\'>' +
-                        '<span class=\'input-group-addon\' onclick=\'this.parentNode.parentNode.removeChild(this.parentNode);\'>X</span>' +
+                        '<div class=\'input-group-prepend\'>' +
+                        '<span class=\'input-group-text\' onclick=\'this.parentNode.parentNode.removeChild(this.parentNode);\'>X</span>' +
                         '<input class=\'form-control\' type=\'text\' name=\'{{ field.name }}[]\' placeholder=\'{{ field.placeholder }}\'>'+
                         '</div>' +
                         '').insertBefore(this);"

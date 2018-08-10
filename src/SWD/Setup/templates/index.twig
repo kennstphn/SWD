@@ -32,55 +32,10 @@
 
 {% block header %}
     {{ parent() }}
-    {% block header %}
         {% block navbar %}
-        <nav class="navbar" role="banner">
-                <div class="navbar-header">
-                    <div class="container relposn">
-                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                            <span class="sr-only">Toggle navigation</span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                        </button>
-                        <div class="brand">
-                            <a href="/">
-                                <span>/</span>
-                            </a>
-                        </div>
-                    </div><!--/.container-->
-                </div>
-                <div class="collapse navbar-collapse">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <ul class="nav navbar-nav">
-                                    <li class="">
-                                        <a href="//{{ domain }}/"><i class="fa fa-home" aria-hidden="true"></i></a>
-                                    </li>
-                                    {% for nav in navigation %}
-                                        {% if nav.dotClass == 'SWD.Structures.Navigation.Single' %}
-                                            <li><a href="//{{ domain }}{{ nav.link }}">{{ nav.text }}</a></li>
-                                        {% elseif nav.dotClass == 'SWD.Structures.Navigation.Collection' %}
-                                            <li>
-                                                <a href="{{ nav.link }}" data-toggle="dropdown" class="dropdown-toggle">{{ nav.text }}<i
-                                                            class="fa fa-angle-down" aria-hidden="true"></i></a>
-                                                <ul class="dropdown-menu">
-                                                    {% for subnav in nav %}
-                                                        <li><a href="{{ subnav.link }}">{{ subnav.text }}</a></li>
-                                                    {% endfor %}
-                                                </ul>
-                                            </li>
-                                        {% endif %}
-                                    {% endfor %}
-                                </ul>
-                            </div>
-                        </div>
-                    </div><!--/.container-->
-                </div>
-        </nav><!--/nav-->
+        {% import '_bs4_navigation.twig' as bs4nav %}
+            {{ bs4nav.dark(navigation ?? {'brand':domain,{'href':'/'}}) }}
         {% endblock %}
-    {% endblock %}
 {% endblock %}
 {% block general %}
     {% block container %}

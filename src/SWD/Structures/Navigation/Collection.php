@@ -1,6 +1,6 @@
 <?php
 namespace SWD\Structures\Navigation;
-class Collection extends Doctrine\Common\Collections\ArrayCollection
+class Collection extends \Doctrine\Common\Collections\ArrayCollection
 {
 
     public $href = 'javascript:;';
