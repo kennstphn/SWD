@@ -31,7 +31,7 @@ try {
     \SWD\Modules\DataControllerHookBridge::init($website);
 
     $website->addModule($website::INIT,                 \SWD\Modules\EntityInstaller\EntityInstaller::class);   // Installs entities on each request. Helpful for development mode.
-    $website->addModule($website::INIT,                 \SWD\Modules\Redirect\Redirect::class);                 // enables redirect through \App\Entities\Redirect entities
+//    $website->addModule($website::INIT,                 \SWD\Modules\Redirect\Redirect::class);                 // enables redirect through \App\Entities\Redirect entities
     $website->addModule($website::INIT,                 \SWD\Modules\TwigRenderer\TwigRenderer::class);         // twig rendering module
     $website->addModule($website::INIT,                 \SWD\Modules\AppConfiguration\AppConfiguration::class);
 

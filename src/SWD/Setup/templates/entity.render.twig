@@ -16,7 +16,7 @@
                 <div class="btn-group pull-right">
                     <a type="button" href="{{ class(entity)|replace({'App\\Entities\\':'/'}) ~'/'~entity.id }}" class="btn btn-default">VIEW</a>
                     <a type="button" href="{{ class(entity)|replace({'App\\Entities\\':'/'})~'/'~entity.id~'/edit' }}" class="btn btn-default">EDIT</a>
-                    <a type="button" href="javascript:if(window.confirm('are you sure you want to delete {{ entity.name }}?')){$.post('{{ class(entity)|replace({'App\\Entities\\':'/'})~'/'~entity.id~'/delete' }}?json',{antiCsrfToken:token}).done(function(){window.location='{{ class(entity)|replace({'App\\Entities\\':'/'}) ~'/' }}';});};" class="btn btn-warning">DELETE</a>
+                    <a type="button" href="javascript:if(window.confirm('are you sure you want to delete {{ entity.name }}?')){$.post('{{ class(entity)|replace({'App\\Entities\\':'/',"\\":'/'})~'/'~entity.id~'/delete' }}?json',{antiCsrfToken:token}).done(function(){window.location.href='{{ class(entity)|replace({'App\\Entities\\':'/',"\\":"/"}) ~'/' }}';});};" class="btn btn-warning">DELETE</a>
                 </div>
                 <div class="clearfix">
 

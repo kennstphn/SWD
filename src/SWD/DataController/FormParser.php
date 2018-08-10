@@ -119,7 +119,7 @@ class FormParser
         $generator = new AssociationalFormFieldParser($this->getEntityClass(),$this->getEntityManager() );
 
         foreach($this->getAssiociationMappings() as $mapping){
-            if($mapping['nullable']){continue;}
+            if( ! array_key_exists('nullable',$mapping) ||  $mapping['nullable']){continue;}
             
             if (
                 $this->isTrackable($this->getEntityClass())

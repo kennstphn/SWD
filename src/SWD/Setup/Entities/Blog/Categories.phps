@@ -68,6 +68,7 @@ class Categories extends Sitemap
      */
     public function setUrl($url)
     {
+        if( ! trim($url)){return;}
         $this->url = preg_replace("/[^0-9a-zA-Z-]/", "$1", strtolower(str_replace([' ', '--'], '-', $url)));
         $this->updateLoc();
     }

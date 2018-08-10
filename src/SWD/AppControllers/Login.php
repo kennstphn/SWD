@@ -3,6 +3,8 @@ namespace SWD\AppControllers;
 
 
 use SWD\DataController\ControlledUrl_interface;
+use App\Factories\EntityManagerFactory;
+use SWD\Factories\UserFactory;
 use SWD\Modules\AccessControl\AccessControl;
 use SWD\Request\Request_interface;
 use SWD\Request\UrlParserFactory;
@@ -71,6 +73,8 @@ class Login implements ControlledUrl_interface, Controller_interface
             $this->response->setResponseCode(403);
             return;
         }
+
+        $this->installUserIfNoneExists($username, $pass);
         
         //no such user failure
         $user = AccessControl::findUser($username);
@@ -105,6 +109,26 @@ class Login implements ControlledUrl_interface, Controller_interface
             $this->response->setRedirect($this->request->get()->get('redirect').$params, 302);
             return;
         }
+    }
+
+    function installUserIfNoneExists($username, $password){
+        $userClass = UserFactory::getUserClass();
+        $em =EntityManagerFactory::create();
+        if(
+        ( (int) ($em->createQueryBuilder()
+            ->select('count(e)')->from(\App\Entities\User::class,'e')
+            ->where('e.username != \'guest\'')
+            ->getQuery()->getScalarResult()[0][1]) ) > 0
+        ){
+            return;
+        }
+
+        $user = new $userClass;
+        $user->setUsername($username);
+        $user->setPassword($password);
+        $em->persist($user);
+        $em->flush($user);
+
     }
 
 }

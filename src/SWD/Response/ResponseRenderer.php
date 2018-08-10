@@ -21,7 +21,7 @@ class ResponseRenderer implements ResponseRenderer_interface
 
     function canRender(Response_interface $response):bool
     {
-        return call_user_func($this->abilityCheckCallback, $reponse);
+        return call_user_func($this->abilityCheckCallback, $response);
     }
 
     function render(Response_interface $response)

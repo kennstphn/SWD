@@ -1,0 +1,54 @@
+{% macro dark(navigation) %}
+    <nav class="navbar navbar-expand-{{ navigation.count > 4 'lg' : 'md' }} navbar-dark bg-dark">
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+                data-target="#navbar-main" aria-controls="navbar-main" aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <a class="navbar-brand" href="#!">{{ navigation.brand }}</a>
+
+        <div class="collapse navbar-collapse" id="navbar-main">
+            <ul class="navbar-nav mr-auto mt-2 mt-md-0">
+                {% import _self as me %}
+                {% for nav in navigation %}
+                    {{% if nav is defined and nav is iterable %}
+                        {{ me.dropdown(nav) }}
+                    {% else %}
+                        <li class="nav-item">
+                            <a {{ nav.disabled ? 'class="nav-link disabled"' : 'class="nav-link"' }} href="{{ nav.href }}">
+                                {{ nav.text }}
+                            </a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+            {% if navigation.search %}
+                <form class="form-inline my-2 my-lg-0" onsubmit="{{ navigation.search.onSubmit }}">
+                    {% if(navigation.search.addonText) %}
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" placeholder="{{ navigation.search.placeholder }}" aria-label="{{ navigation.search.placeholder }}">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="button">{{ navigation.search.addonText }}</button>
+                            </div>
+                        </div>
+                    {% else %}
+                        <input class="form-control mr-sm-2" type="text" placeholder="{{ navigation.search.placeholder }}">
+                    {% endif %}
+                </form>
+            {% endif %}
+        </div>
+    </nav>
+{% endmacro %}
+
+{% macro dropdown(nav) %}
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="{{ nav.href ?? '#' }}" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {{ nav.text }}
+        </a>
+        <div class="dropdown-menu" >
+            {% for subnav in nav %}
+                <a class="dropdown-item" href="{{ subnav.href }}">{{ subnav.text }}</a>
+            {% endfor %}
+        </div>
+    </li>
+{% endmacro %}

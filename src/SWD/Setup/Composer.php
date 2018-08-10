@@ -3,6 +3,7 @@ namespace SWD\Setup;
 use Composer\Script\Event;
 use SWD\Entities\Users;
 use SWD\Factories\EntityManagerFactory;
+use SWD\Modules\EntityInstaller\EntityInstaller;
 
 class Composer
 {
@@ -134,17 +135,7 @@ class Composer
 
         $copyFilesFromSiblingDir('Entities', $copyFilesFromSiblingDir);
         $copyFilesFromSiblingDir('Controllers', $copyFilesFromSiblingDir);
-
-        $userClass = '\\App\\Entities\\User';
-        /** @var Users $superAdmin */
-        $superAdmin = new $userClass;
-        $superAdmin->setUsername(
-            $event->getIO()->ask('Choose a username for the admin user')
-        );
-        $superAdmin->setUsername(
-            $event->getIO()->ask('Enter a password to be used for the admin user')
-        );
-
+        
     }
 
     protected static function getHtaccessText(){

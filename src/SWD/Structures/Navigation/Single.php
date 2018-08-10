@@ -5,6 +5,6 @@ use SWD\Structures\HelperTraits\DotClass;
 class Single
 {
     use DotClass;
-    public $link;
+    public $href;
     public $text;
 }
