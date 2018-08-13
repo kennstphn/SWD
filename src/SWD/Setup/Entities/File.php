@@ -27,8 +27,8 @@ class File extends EntityBase
         parent::__construct();
         $this->folder = '/';
 
-        $r = (string)rand(1000,9999);
-        $this->name = time().'-'.$r;
+        //$r = (string)rand(1000,9999);
+        //$this->name = time().'-'.$r;
     }
 
     /**

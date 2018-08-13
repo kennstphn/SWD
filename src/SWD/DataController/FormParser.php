@@ -3,6 +3,7 @@ namespace SWD\DataController;
 
 
 use Doctrine\ORM\EntityManager;
+use SWD\Entities\DefinesAssociationFormFields_interface;
 use SWD\Structures\FormField;
 
 class FormParser
@@ -34,7 +35,6 @@ class FormParser
      * @return FormField[]
      */
     function getFormFields(){
-
         $entity = $this->entity;
 
         $fields = array();
@@ -114,8 +114,10 @@ class FormParser
             array_push($fields , $field);
         }
 
-        //if ( ! $includeAssociations){return $fields;}
-
+        if(in_array(DefinesAssociationFormFields_interface::class, class_implements($this->getEntityClass() ) )){
+            return array_merge($fields,call_user_func([$this->getEntityClass(),'getAssociationFormFields'],$this->getEntity()));
+        }
+        
         $generator = new AssociationalFormFieldParser($this->getEntityClass(),$this->getEntityManager() );
 
         foreach($this->getAssiociationMappings() as $mapping){

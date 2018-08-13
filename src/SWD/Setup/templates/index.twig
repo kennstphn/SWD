@@ -34,7 +34,7 @@
     {{ parent() }}
         {% block navbar %}
         {% import '_bs4_navigation.twig' as bs4nav %}
-            {{ bs4nav.dark(navigation ?? {'brand':domain,{'href':'/'}}) }}
+            {{ bs4nav.dark(navigation) }}
         {% endblock %}
 {% endblock %}
 {% block general %}

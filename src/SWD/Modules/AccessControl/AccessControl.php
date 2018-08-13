@@ -33,7 +33,7 @@ class AccessControl extends Module
 
         $u = $factory::getCurrentUser($website->request());
         if ( ! $factory::userCan($u, $website->request(), $this->em)){
-            $website->response()->addError(new \Exception('User can not perform that action'));
+            $website->response()->addError(new \Exception('User can not perform that action',403));
             $website->response()->setResponseCode(403);
         }
 

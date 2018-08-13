@@ -36,7 +36,10 @@ class TwigRenderer extends Module
 
         $options = array('debug'=>true,'cache'=>false);
 
-        $twig = new Twig($loader,$options);
+        $loader2 = new DatabaseLoader();
+        $loaderChain = new \Twig_Loader_Chain([$loader, $loader2]);
+        
+        $twig = new Twig($loaderChain,$options);
 
         $twig->init($website);
         

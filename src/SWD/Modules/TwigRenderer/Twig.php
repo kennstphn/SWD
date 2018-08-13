@@ -19,19 +19,20 @@ class Twig extends \Twig_Environment implements ResponseRenderer_interface
     protected $website;
 
     /**
-     * @param mixed $website
+     * @param Website $website
+     * @throws \Exception
      */
     public function init(Website $website)
     {
         $this->website = $website;
         $this->addExtension(new \Twig_Extension_Debug());
-        $this->addFunction(new \Twig_Function('dateTime', function ($date,$format = null) {
+        $this->addFunction(new \Twig_SimpleFunction('dateTime', function ($date,$format = null) {
             if (is_string($date)){$date = new \DateTime($date);}
             if(is_null($format)){return $date;}
             if(is_string($format)){return $date->format($format);}
             throw new \Exception('failed to identify function call usecase for dateTime');
         }));
-        $this->addFunction(new \Twig_Function('class', function ($object){
+        $this->addFunction(new \Twig_SimpleFunction('class', function ($object){
             if (! is_object($object)){return gettype($object);}
             return str_replace('DoctrineProxies\\__CG__\\', '', get_class($object));
         }));

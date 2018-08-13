@@ -47,11 +47,11 @@ class RenderControllerFactory implements ControllerFactory_interface, Controller
             'errors'=>$this->response->getErrors()
         );
 
-        $twig->addFunction(new \Twig_Function('dumpVars', function($depth = 2)use($renderContext){
+        $twig->addFunction(new \Twig_SimpleFunction('dumpVars', function($depth = 2)use($renderContext){
             Debug::dump($renderContext,$depth+1,true,false);
         }));
 
-        $twig->addFunction(new \Twig_Function('cacheBust',function($relativeToHome){
+        $twig->addFunction(new \Twig_SimpleFunction('cacheBust',function($relativeToHome){
             $file = getcwd().$relativeToHome;
             $mtime = file_exists($file) ? '/'.filemtime($file) : '/000000000';
             $pos = strpos($relativeToHome, '/', 1);

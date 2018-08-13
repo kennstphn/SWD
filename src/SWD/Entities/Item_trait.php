@@ -1,33 +1,25 @@
 <?php
-namespace App\Entities;
-use SWD\Entities\EntityBase;
+namespace SWD\Entities;
+use \App\Entities\File;
 
-class CarouselSlide extends EntityBase
+trait Item_trait
 {
-    
     protected $image;
-    protected $align;
     protected $title;
-    protected $content;
-    protected $callToAction;
+    protected $description;
+    protected $action;
     protected $href;
     protected $tags =[];
     protected $priority = 1;
 
-    static function loadMetadata($m)
+    static function __loadItemMetadata($m)
     {
-        parent::__loadMetadata($m);
         $b = new \Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder($m);
-        $b->createManyToOne('image',File::class)->addJoinColumn('image_id','id',false)->build();
-
-        $b->createField('align','string')->nullable(true)->build();
-
+        $b->addManyToOne('image',File::class);
         $b->createField('title','string')->nullable(true)->build();
-        $b->createField('content','text')->nullable(true)->build();
-        $b->createField('callToAction','string')->nullable(true)->build();
+        $b->createField('description','text')->nullable(true)->build();
+        $b->createField('action','string')->nullable(true)->build();
         $b->createField('href','string')->nullable(true)->build();
-        $b->addField('tags','array');
-        $b->addField('priority','integer');
 
     }
 
@@ -47,21 +39,6 @@ class CarouselSlide extends EntityBase
         $this->image = $image;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getAlign()
-    {
-        return $this->align;
-    }
-
-    /**
-     * @param mixed $align
-     */
-    public function setAlign($align)
-    {
-        $this->align = $align;
-    }
 
     /**
      * @return mixed
@@ -82,33 +59,33 @@ class CarouselSlide extends EntityBase
     /**
      * @return mixed
      */
-    public function getContent()
+    public function getDescription()
     {
-        return $this->content;
+        return $this->description;
     }
 
     /**
-     * @param mixed $content
+     * @param mixed $description
      */
-    public function setContent($content)
+    public function setDescription($description)
     {
-        $this->content = $content;
+        $this->description = $description;
     }
 
     /**
      * @return mixed
      */
-    public function getCallToAction()
+    public function getAction()
     {
-        return $this->callToAction;
+        return $this->action;
     }
 
     /**
-     * @param mixed $callToAction
+     * @param mixed $action
      */
-    public function setCallToAction($callToAction)
+    public function setAction($action)
     {
-        $this->callToAction = $callToAction;
+        $this->action = $action;
     }
 
     /**
