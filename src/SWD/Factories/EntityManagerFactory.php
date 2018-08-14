@@ -30,7 +30,7 @@ abstract class EntityManagerFactory
      * @throws \Exception
      */
     static function create(){
-        if( get_called_class() === EntityManagerFactory::class && class_exists(self::APP_VERSION)){
+        if( get_called_class() === \SWD\Factories\EntityManagerFactory::class && class_exists(self::APP_VERSION)){
             return call_user_func([self::APP_VERSION, 'create']);
         }
         if (self::$em){return self::$em;}
