@@ -1,6 +1,6 @@
 {% extends 'index.twig' %}
-{% block h1 %}{{ response.meta.responseCode }}{% endblock %}
-{% block container %}
+{% block content %}
+    <h1>{{ response.responseCode }}</h1>
 <div class="container">
     <p>
         This request has encountered an error.

@@ -9,7 +9,6 @@ trait Item_trait
     protected $description;
     protected $action;
     protected $href;
-    protected $tags =[];
     protected $priority = 1;
 
     static function __loadItemMetadata($m)
@@ -119,23 +118,7 @@ trait Item_trait
     {
         $this->priority = $priority;
     }
-
-    /**
-     * @return array
-     */
-    public function getTags()
-    {
-        return $this->tags;
-    }
-
-    /**
-     * @param array $tags
-     */
-    public function setTags($tags)
-    {
-        $this->tags = $tags;
-    }
-
+    
     function getName()
     {
         return $this->getTitle() ?? $this->getId();

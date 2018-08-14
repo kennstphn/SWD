@@ -166,8 +166,15 @@ class EntityController implements Controller_interface
         $this->updateEntityFromPostedData($newEntity);
         $this->em->flush();
         
-        $this->response->setResponseCode(200);
-        $this->response->setData($newEntity);
+        if($this->request->get()->get('redirect') == 'this'){
+            $this->response->setRedirect(
+                str_replace('/create', '/'.$newEntity->getId().'/edit',$this->request->url()->__toString() ),
+                301
+            );
+        }else{
+            $this->response->setResponseCode(200);
+            $this->response->setData($newEntity);
+        }
     }
 
     protected function edit(int $id){

@@ -1,6 +1,6 @@
 {% macro build(navigation) %}
-    <nav class="{{ navigation.fixed ? 'fixed-top':'' }} navbar navbar-expand-md navbar-dark bg-dark">
-        <a class="navbar-brand" href="/">{{ navigation.brand ?? domain}}</a>
+    <nav class="fixed-top navbar navbar-expand-md navbar-dark bg-dark">
+        <a class="navbar-brand" href="/">{{ domain }}</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -8,23 +8,54 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
                 {% import _self as me %}
-                {% for nav in navigation %}
-                    {% if nav and nav is iterable %}
-                        {{ me.dropdown(nav) }}
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ nav.href }}">{{ nav.text }}</a>
-                        </li>
-                    {% endif %}
+                {% for item in api('/item/search/tags.name=navigation').data %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ item.href }}">{{ item.title }}</a>
+                    </li>
                 {% endfor %}
             </ul>
-            {% if navigation.search %}
-            <form class="form-inline my-2 my-lg-0" onsubmit="{{ navigation.search.onSubmit }}">
-                <input class="form-control mr-sm-2" type="search" placeholder="{{ navigation.search.placeholder }}" aria-label="{{ navigation.search.placeholder }}">
-                <button class="btn btn-primary my-2 my-sm-0" type="submit">{{ navigation.search.submitText }}</button>
-            </form>
+            {% if currentUser and  currentUser.username != 'guest' %}
+                <div class="nav-item dropdown ">
+                    <button class="nav-link dropdown-toggle btn btn-dark" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Api
+                    </button>
+                    <div class="dropdown-menu" style="overflow-y:scroll;max-height:80vh;left:-9rem" >
+                        <span class="dropdown-item"><a class="btn btn-danger" href="/logout">Logout</a></span>
+                        {% for m in entityMetadataList() %}
+                            {% set link = m.name|replace({"\\":"."})|replace({"..":'.'})|replace({'App.Entities':''})|replace({'.':'/'}) %}
+                            <span class="dropdown-item d-flex " >
+                                    <small class="flex-grow-1">{{ link }} &nbsp;</small>
+                                    <span class="btn-group-vertical btn-group-sm">
+                                        <a class="btn btn-primary" href="{{ link }}?perPage=10">List</a><a class="btn btn-success" href="{{ link }}/create">Create</a>
+                                    </span>
+                            </span>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% else %}
+                <div class="nav-item dropdown ">
+                    <button class="nav-link dropdown-toggle btn btn-dark" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Login
+                    </button>
+                    <div class="dropdown-menu" style="min-width:15rem;left:-9rem">
+                        <form class="px-4 py-3" method="post" action="/login?redirect=/">
+                            <div class="form-group">
+                                <label for="login-username">Username</label>
+                                <input type="text" name="username" class="form-control" id="login-username">
+                            </div>
+                            <div class="form-group">
+                                <label for="login-password">Password</label>
+                                <input type="password" name="password" class="form-control" id="login-password" placeholder="Password">
+                                <input type="hidden" name="antiCsrfToken" value="{{ token }}">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Sign in</button>
+                        </form>
+                        <div class="dropdown-divider"></div>
+                    </div>
+                </div>
             {% endif %}
         </div>
+
     </nav>
 {% endmacro %}
 

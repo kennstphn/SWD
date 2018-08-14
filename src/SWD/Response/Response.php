@@ -105,6 +105,8 @@ class Response implements Response_interface
         $this->errors->add($e);
         if ($e->getCode() !== 0){
             $this->responseCode = $e->getCode();
+        }else{
+            $this->responseCode = 400;
         }
     }
 
@@ -227,7 +229,6 @@ class Response implements Response_interface
         ){$this->responseCode = 200;}
 
         $status = $this->renderCallbackArray->render($this);
-
         if ($status){return;}
         if ($this->headers()->containsKey('Content-Type')){
             foreach($this->headers() as $type=>$val){

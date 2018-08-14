@@ -2,7 +2,6 @@
 namespace SWD\AppControllers;
 
 
-use App\Factories\UrlParserFactory;
 use SWD\DataController\ControlledUrl_interface;
 use SWD\PatternMatch\ArgumentList;
 use SWD\Request\Request_interface;
@@ -19,7 +18,7 @@ abstract class UrlController implements ControlledUrl_interface
     {
         $this->request = $request;
         $this->response = $response;
-        $this->parser = UrlParserFactory::create($request);
+        $this->parser = \SWD\Request\UrlParserFactory::create($request);
         $this->pattern = new ArgumentList($this->parser->getControllerArguments());
     }
 

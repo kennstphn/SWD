@@ -37,19 +37,11 @@
             {{ bs4nav.dark(navigation) }}
         {% endblock %}
 {% endblock %}
-{% block general %}
-    {% block container %}
-        <div class="container">
-            {% block h1 %}
-                <h1>{{ seo.h1 }}</h1>
-            {% endblock %}
-            {% block content %}
-                <div class="content">
-                    {{ response.data }}
-                </div>
-            {% endblock %}
+{% block content %}
+        <h1>{{ seo.h1 }}</h1>
+        <div class="content">
+            {{ response.data }}
         </div>
-    {% endblock %}
     {% block modal %}
         <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="Modal">
             <div class="modal-dialog" role="document">
@@ -67,42 +59,7 @@
         </div>
     {% endblock %}
 {% endblock %}
-{% block footer %}
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-6 col-xs-12">
-                    <div class="row">
-                        <div class="col-xs-6"></div>
-                        <div class="col-xs-6"></div>
-                    </div>
-                </div>
-                <div class="col-sm-6 col-xs-12">
-                    <div class="row">
-                        <div class="col-xs-6"></div>
-                        <div class="col-xs-6"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="container-fluid">
-            <div class="row footer-bottom">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-xs-12">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    Copyright &copy; {{"now"|date('Y') }} {{ domain }}, All Rights Reserved.
-                                </div>
-                                <div class="col-sm-6">
-                                    Powered by <a href="https://shermanwebdesign.com">Sherman Web Design</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-{% endblock %}
+
 {% block javascript %}
     <script src="//{{ domain }}{{ js('/js/script.js') }}"></script>
     {% if response.meta.antiCsrfToken %}

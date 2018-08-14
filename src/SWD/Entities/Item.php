@@ -18,8 +18,8 @@ class Item extends EntityBase
         parent::__loadMetadata($m);
         self::__loadItemMetadata($m);
         $b = new \Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder($m);
-        $b->addOwningManyToMany('tags',\App\Entities\Tag::class);
-        
+        $b->addOwningManyToMany('tags',\App\Entities\Tag::class,'items');
+
     }
 
     /**

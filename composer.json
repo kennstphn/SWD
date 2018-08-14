@@ -19,7 +19,7 @@
     "doctrine/orm": "^2.5",
     "phpmailer/phpmailer": "^6.0",
     "curl/curl": "^1.8",
-    "ezyang/htmlpurifier": "^4.9",
+    "ezyang/htmlpurifier": "^4.10",
     "php-http/guzzle6-adapter": "^1.1",
     "gabrielbull/ups-api": "^0.8.0",
     "vinceg/usps-php-api": "^1.0",

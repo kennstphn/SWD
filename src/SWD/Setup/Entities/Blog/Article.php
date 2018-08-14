@@ -31,7 +31,7 @@ class Article extends Sitemap
         $b->addField('slug', 'string');
         $b->addField('hero','string');
 
-        $b->addManyToOne('category', Categories::class,'articles');
+        $b->createManyToOne('category', Categories::class)->inversedBy('articles')->addJoinColumn('category_id', 'id', false)->build();
 
     }
 

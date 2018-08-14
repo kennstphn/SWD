@@ -10,6 +10,7 @@ use Doctrine\ORM\Tools\Setup;
 abstract class EntityManagerFactory
 {
     protected static $em;
+    const APP_VERSION = 'App\\Factories\\EntityManagerFactory';
 
     static $file = __FILE__;
 
@@ -29,6 +30,9 @@ abstract class EntityManagerFactory
      * @throws \Exception
      */
     static function create(){
+        if( get_called_class() === EntityManagerFactory::class && class_exists(self::APP_VERSION)){
+            return call_user_func([self::APP_VERSION, 'create']);
+        }
         if (self::$em){return self::$em;}
 
         $proxyDir = substr(getcwd(),0,strrpos(getcwd(),'/' )).'/proxy-entities';

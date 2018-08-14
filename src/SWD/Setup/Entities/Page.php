@@ -3,7 +3,6 @@ namespace App\Entities;
 
 
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use SWD\Factories\HtmlPurifier;
 
 class Page extends Sitemap
 {
@@ -38,7 +37,7 @@ class Page extends Sitemap
      */
     public function setContent($content)
     {
-        $this->content = HtmlPurifier::create()->purify($content);
+        $this->content = $content;
     }
 
     /**

@@ -24,12 +24,12 @@ class Item extends \SWD\Entities\Item implements \SWD\Entities\DefinesAssociatio
         $tags->setName('tags');
         $tags->setReadOnly(false);
 
-        $em = \App\Entities\EntityManagerFactory()->create();
-        $tagList = $em->select('t')->distinct(true)->from(\App\Entities\Tag::class,'t')->getQuery()->getResult();
+        $em = \App\Factories\EntityManagerFactory::create();
+        $tagList = $em->createQueryBuilder()->select('t')->distinct(true)->from(\App\Entities\Tag::class,'t')->getQuery()->getResult();
         $options = [];
         foreach($tagList as $tag){
             $opt = new FormSelectOption();
-            $opt->setSelected($this->getTags()->contains($tag));
+            $opt->setSelected( $this->getTags()->contains($tag) );
             $opt->setText($tag->getName());
             $opt->setValue($tag->getId());
             array_push($options,$opt);
@@ -39,11 +39,32 @@ class Item extends \SWD\Entities\Item implements \SWD\Entities\DefinesAssociatio
         $tags->setType('multiple');
         
         $file = new FormField($getId('image'));
-        $file->setType('input');
-        $file->setValue($this->getImage()->getData());
-        $file->setName('image[data]');
-        $file->setType('file');
+        $file->setType('select');
+        $file->setName('image');
         $file->setLabel('Image');
+        $file->setTag('select');
+
+        $options = [];
+        $query = $em->createQueryBuilder();
+        $query->select('e.name')
+            ->groupBy('e.name')
+            ->from(File::class,'e')
+            ->orderBy('e.name')
+        ;
+        $query->addSelect('e.id')->addGroupBy('e.id')->addOrderBy('e.id');
+        $query->addSelect('e.folder')->addGroupBy('e.folder')->addOrderBy('e.folder');
+
+        foreach($query->getQuery()->getResult() as $f){
+            $opt = new FormSelectOption();
+            $opt->setSelected($this->getImage() && $this->getImage()->getId() == $f['id']);
+            $opt->setValue($f['id']);
+            $opt->setText($f['name']);
+            $opt->setOptionGroup($f['folder']);
+            array_push($options, $opt);
+        }
+
+
+        $file->setOptions($options);
         
         return [$file, $tags];
     }

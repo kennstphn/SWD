@@ -42,6 +42,9 @@ class UserFactory implements UserFactory_interface
 
     static function getCurrentUser(Request_interface $request):User_interface
     {
+        if(class_exists('App\\Factories\\UserFactory')){
+            return call_user_func(['App\\Factories\\UserFactor', 'getCurrentUser'],$request);
+        }
         /** @var UserFactory_interface $thisClass */
         $thisClass = get_called_class();
 
@@ -74,13 +77,13 @@ class UserFactory implements UserFactory_interface
         if ( ! class_exists($class)){throw new \Exception(self::class.' depends on (missing) '.$class);}
 
         $count = $em->createQueryBuilder()->select('count(e.id)')->from($class,'e')
-            ->where('e.loc = :url')->setParameter('url', $request->url()->__toString())
+            ->where('e.loc = :url')->andWhere('e.includeInSitemap = 1')->setParameter('url', $request->url()->__toString())
             ->getQuery()->getSingleScalarResult();
 
         //allow non-entityAction requests to /sitemap.xml
         if (
             $request->url()->__toString() === '/sitemap.xml'
-            || $request->url()->__toString() === '/sitemap'
+            || $request->url()->__toString() === '/sitemap.html'
         ){
             return true;
         }

@@ -2,7 +2,7 @@
 {% macro renderForm(fieldList, method='post', url='') %}
     {% import _self as form %}
 
-    <form action="{{ url }}" method="{{ method }}" enctype="multipart/form-data" role="form">
+    <form action="{{ url }}?redirect=this" method="{{ method }}" enctype="multipart/form-data" role="form">
         <input type="hidden" name="antiCsrfToken" >
         <script>document.addEventListener('DOMContentLoaded',function(){$('[name="antiCsrfToken"]').val(token)})</script>
         {% for field in fieldList %}{{ form.renderFormField(field) }}{% endfor %}
@@ -62,9 +62,10 @@
         <input id='{{ field.id }}'
                class="form-control"
                type="file"
-               {% if not field.readOnly %}name="{{ field.name }}"{% endif %}
+               {% if not field.readOnly %}data-name="{{ field.name }}"{% endif %}
                 {{ field.required ? 'required ' : '' }}
                 {{ field.readOnly ? ' readonly ' : '' }}
+                onchange="this.setAttribute('name', this.getAttribute('data-name'))"
         >
     </div>
 {% endmacro %}

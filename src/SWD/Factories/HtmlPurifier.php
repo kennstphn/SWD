@@ -24,5 +24,9 @@ class HtmlPurifier
         }
         return new self();
     }
+    
+    static function safeConfigForUserInput(){
+        return null;
+    }
 
 }

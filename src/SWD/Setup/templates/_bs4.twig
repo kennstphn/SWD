@@ -3,11 +3,11 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="{{ seo.metaDescription }}">
+    <meta name="description" content="{{ seo.metaDescription ?? response.data.metaDescription }}">
     <meta name="author" content="">
-    <link rel="icon" href="../../../../favicon.ico">
+    <link rel="icon" href="{{ (api('/file/search/name=favicon').data|first).url }}">
 
-    <title>{{ seo.title }}</title>
+    <title>{{ seo.title ?? response.data.seoTitle }}</title>
 
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet"
@@ -22,8 +22,9 @@
         /* Padding below the footer and lighter body text */
 
         body {
+            position: relative;
             padding-top: 3rem;
-            padding-bottom: 3rem;
+            padding-bottom: 6rem;
             color: #5a5a5a;
         }
 
@@ -43,15 +44,21 @@
 
         /* Declare heights because of positioning of img element */
         .carousel-item {
-            height: 32rem;
+            height: {{ request.url == '/' ? 'calc(100vh - 56px)' : '18rem' }};
             background-color: #777;
+            background-position: center {{ request.url == '/' ? 'center' : 'bottom' }};
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size:cover;
+            background-repeat:no-repeat;
         }
         .carousel-item > img {
             position: absolute;
             top: 0;
             left: 0;
             min-width: 100%;
-            height: 32rem;
+            height: {{ request.url == '/' ? 32 : 18 }}rem;
         }
 
 
@@ -108,6 +115,14 @@
                 margin-top: 7rem;
             }
         }
+        footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 60px;
+            line-height: 60px;
+            background-color: #f5f5f5;
+        }
     </style>
     {% endblock %}
     <script>var token = '{{ response.meta.antiCsrfToken }}';</script>
@@ -116,58 +131,31 @@
 
 <header>
     {% block navigation %}
-        {% if navigation %}
-            {% import '_bs4_navigation.twig' as nav %}
-            {{ nav.build(navigation) }}
-        {% else %}
-            <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-                <a class="navbar-brand" href="#">Carousel</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarCollapse">
-                    <ul class="navbar-nav mr-auto">
-                        <li class="nav-item active">
-                            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Link</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link disabled" href="#">Disabled</a>
-                        </li>
-                    </ul>
-                    <form class="form-inline mt-2 mt-md-0">
-                        <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                    </form>
-                </div>
-            </nav>
-        {% endif %}
+            {% include 'navigation.twig' %}
     {% endblock %}
 </header>
 
 <main role="main">
     {% block carousel %}
-        {% set carousel = api('/CarouselSlide/',{"orderBy":"priority"}).data %}
+        {% set carousel = api('/Item/search/tags.name=carousel',{"orderBy":"priority"}).data %}
     {% if carousel|length %}
     <div id="carousel" class="carousel slide" data-ride="carousel">
         {% if carousel|length > 1 %}
             <ol class="carousel-indicators">
-                {% for i in range (0, carousel|length ) %}
+                {% for i in range (0, (carousel|length -1) ) %}
                     <li data-target="#carousel" data-slide-to="{{ i }}"  class="{{ i == 0 ? 'active':'' }}"></li>
                 {% endfor %}
             </ol>
         {% endif %}
         <div class="carousel-inner">
             {% for slide in carousel %}
-            <div class="{{ loop.index0 == 0 ? 'active' : '' }} carousel-item" style="background:url('{{ slide.image.src ?? slide.image.url }}') no-repeat center center ;-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;background-size:cover;">
+            <div class="{{ loop.index0 == 0 ? 'active' : '' }} carousel-item" style="background-image:url('{{ slide.image.src ?? slide.image.url }}');">
                 <div class="container">
                     <div class="{{ 'text-'~slide.align }} carousel-caption ">
                         <h2>{{ slide.title }}</h2>
-                        <p>{{ slide.content }}</p>
-                        {% if slide.callToAction or slide.href %}
-                        <p><a class="btn btn-lg btn-primary" href="{{ slide.href }}" role="button">{{ slide.callToAction ?? 'More...' }}</a></p>
+                        <p>{{ slide.description }}</p>
+                        {% if slide.action or slide.href %}
+                        <p><a class="btn btn-lg btn-primary" href="{{ slide.href }}" role="button">{{ slide.action ?? 'More...' }}</a></p>
                         {% endif %}
                     </div>
                 </div>
@@ -193,18 +181,18 @@
     ================================================== -->
     <!-- Wrap the rest of the page in another container to center all the content. -->
 
+{% block content %}
     <div class="container marketing">
-        {% block content %}
-        {% endblock %}
     </div><!-- /.container -->
+{% endblock %}
 
 
-    <!-- FOOTER -->
-    <footer class="container">
-        <p class="float-right"><a href="#">Back to top</a></p>
-        <p>&copy; {{ "now"|date('Y') }} {{ domain }} &middot; powered by <a href="https://shermanwebdesign.com">SWD</a> </p>
-    </footer>
 </main>
+<!-- FOOTER -->
+<footer class="container-fluid">
+    <p class="float-right"><a href="#">Back to top</a></p>
+    <p>&copy; {{ "now"|date('Y') }} {{ domain }} &middot; powered by <a href="https://shermanwebdesign.com">SWD</a> </p>
+</footer>
 
 <!-- Bootstrap core JavaScript
 ================================================== -->
@@ -212,6 +200,16 @@
 <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+<script>
+    var currentSimpleMde = null
+    $('textarea').on('focus',function(e){
+        if(currentSimpleMde){currentSimpleMde.toTextArea()}
+        var s = new SimpleMDE({element:e.target,forceSync:true});
+        currentSimpleMde=s;
+    })
+</script>
 {% block javascript %}
 
 {% endblock %}

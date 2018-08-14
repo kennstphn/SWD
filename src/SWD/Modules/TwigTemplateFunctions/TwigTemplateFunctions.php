@@ -10,6 +10,7 @@ use SWD\Modules\AccessControl\AccessControl;
 use SWD\Modules\TwigRenderer\Twig;
 use SWD\Request\RegexUrlParser;
 use SWD\Request\Request;
+use SWD\Request\Request_interface;
 use SWD\Response\Response;
 use SWD\Website\Module;
 use SWD\Website\Website;
@@ -70,26 +71,11 @@ class TwigTemplateFunctions extends Module
         $twig->addFilter(TwigFilterCollection::base64());
 
         $twig->addFunction(new \Twig_SimpleFunction('entityMetadataList',function(){
-            $classList = EntityManagerFactory::listEntityClasses();
-            $em = EntityManagerFactory::create();
-            $array = [];
-            foreach($classList as $class){
-                array_push($array, $em->getClassMetadata($class));
-            }
-            return $array;
+            
+            return EntityManagerFactory::create()->getMetadataFactory()->getAllMetadata();
         }));
 
-        $twig->addFunction(new \Twig_SimpleFunction('api',function($url, $get = array()){
-            $request = Request::create(array(
-                'server'=>array_merge($this->server, array('REQUEST_METHOD'=>'GET','REQUEST_URI'=>$url)),
-                'get'=>$get
-            ));
-            $parser = new RegexUrlParser($request->url());
-            $response = new Response();
-            $controller = new EntityController($parser->getEntityClass(),$request,$response);
-            $controller();
-            return $response;
-        }));
+        $twig->addFunction(self::api($website->request()));
 
 
         $twig->addFunction(new \Twig_SimpleFunction('formFields',function ($entity,$includeAssociations = false) use ($entityManager){
@@ -144,7 +130,25 @@ class TwigTemplateFunctions extends Module
         }));
 
         $twig->addFilter(TwigFilterCollection::dotClass());
-
+        $twig->addFilter(TwigFilterCollection::markdown());
+        $twig->addFilter(TwigFilterCollection::purify());
+        $twig->addGlobal('safeTags','<p><br><hr><li><ul><ol><i><b><u><strong><h2><h3><h4><h5><h6><h7><h8><span>');
+        $twig->addGlobal('token', $website->response()->getMeta()->get('antiCsrfToken'));
+    }
+    
+    static function api(Request_interface $request){
+        return new \Twig_SimpleFunction('api',function($url, $get = array())use ($request){
+            $request = Request::create(array(
+                'server'=>array_merge($request->server()->toArray(), array('REQUEST_METHOD'=>'GET','REQUEST_URI'=>$url)),
+                'get'=>$get
+            ));
+            $parser = new RegexUrlParser($request->url());
+            $response = new Response();
+            $controller = new EntityController($parser->getEntityClass(),$request,$response);
+            $controller();
+            return $response;
+        });
+        
     }
 
 }

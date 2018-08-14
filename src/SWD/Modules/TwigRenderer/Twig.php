@@ -81,6 +81,7 @@ class Twig extends \Twig_Environment implements ResponseRenderer_interface
             }
         }
 
+        http_response_code($response->getResponseCode());
         foreach($response->headers() as $key => $header){
             if(is_string($key)){
                 header($key.':'.$header);
@@ -88,6 +89,7 @@ class Twig extends \Twig_Environment implements ResponseRenderer_interface
                 header($header);
             }
         }
+        
         if ( $this->isBlockCall()){
             echo $template->renderBlock($this->getRequestedBlock(),$renderContext);
             return;

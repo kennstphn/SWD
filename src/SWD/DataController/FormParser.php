@@ -114,8 +114,8 @@ class FormParser
             array_push($fields , $field);
         }
 
-        if(in_array(DefinesAssociationFormFields_interface::class, class_implements($this->getEntityClass() ) )){
-            return array_merge($fields,call_user_func([$this->getEntityClass(),'getAssociationFormFields'],$this->getEntity()));
+        if( in_array(DefinesAssociationFormFields_interface::class, class_implements($this->getEntityClass() ) )){
+            return array_merge($fields,$this->entity->getAssociationFormFields());
         }
         
         $generator = new AssociationalFormFieldParser($this->getEntityClass(),$this->getEntityManager() );
@@ -123,8 +123,8 @@ class FormParser
         foreach($this->getAssiociationMappings() as $mapping){
             if( array_key_exists('nullable',$mapping) &&  $mapping['nullable']){continue;}
             if( 
-                array_key_exists('joinColumns', $mapping) 
-                && ( ! array_key_exists('nullable', $mapping['joinColumns'][0]) || $mapping['joinColumns'][0]['nullable'] === true)
+                ! array_key_exists('joinColumns', $mapping) 
+                || ( ! array_key_exists('nullable', $mapping['joinColumns'][0]) || $mapping['joinColumns'][0]['nullable'] === true)
             ){continue;}
             
             if (

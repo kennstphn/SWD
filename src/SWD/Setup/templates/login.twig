@@ -1,6 +1,5 @@
 {% extends 'index.twig' %}
 {% set title = 'Login' %}
-{% block navigation %}{% endblock %}
 {% block content %}
 
     <form action="{{ request.get.containsKey('redirect') ? '?redirect='~request.get.redirect : '' }}{% if request.get.containsKey('redirectParams') %}{% for key,val in request.get.get('redirectParams') %}&redirectParams[{{ key }}]={{ val }}{% endfor %}{% endif %}"

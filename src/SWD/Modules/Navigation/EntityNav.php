@@ -1,5 +1,5 @@
 <?php
-namespace SWD\Modules;
+namespace SWD\Modules\Navigation;
 use SWD\Structures\Navigation;
 use SWD\Website\Module;
 use SWD\Website\Website;
@@ -11,10 +11,10 @@ class EntityNav extends Module
         $em = \App\Factories\EntityManagerFactory::create();
         $nav = new Navigation\Navigation();
 
-        $nav->search = new Navigation\Search;
-        $nav->search->submitText = 'Go!';
-        $nav->search->placeholder = 'Enter search term';
-        $nav->search->onSubmit = 'alert();return false;';
+        //$nav->search = new Navigation\Search;
+        //$nav->search->submitText = 'Go!';
+        //$nav->search->placeholder = 'Enter search term';
+        //$nav->search->onSubmit = 'alert();return false;';
         $nav->fixed = true;
         foreach($em->getMetadataFactory()->getAllMetadata() as $m){
             $item = new Navigation\Collection();

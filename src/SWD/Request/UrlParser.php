@@ -59,7 +59,8 @@ class UrlParser implements UrlParser_interface
 
         for ( $i=0,$c=count($possiblePieces); $i < $c; $i++){
             $testControllerClass = 'App\\Controllers\\'.implode('\\', $this->classIzeList(array_slice($possiblePieces, 0,$i + 1)));
-            $testControllerClass = substr($testControllerClass, -4) === '.php' ? substr($testControllerClass,0, -4) : $testControllerClass;
+            //$testControllerClass = substr($testControllerClass, -4) === '.php' ? substr($testControllerClass,0, -4) : $testControllerClass;
+            $testControllerClass = explode('.', $testControllerClass)[0];
             if ( class_exists($testControllerClass) ){
                 $this->controllerClass = $testControllerClass;
                 $this->controllerArguments = array_slice($possiblePieces, $i + 1);
