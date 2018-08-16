@@ -24,6 +24,6 @@
     "gabrielbull/ups-api": "^0.8.0",
     "vinceg/usps-php-api": "^1.0",
     "league/iso3166": "^2.1",
-    "erusev/parsedown":"^1.8"
+    "erusev/parsedown":"^1.7"
   }
 }
