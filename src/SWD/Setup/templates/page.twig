@@ -7,4 +7,5 @@
     {% if currentUser and currentUser.username != 'guest' %}
         <a class="btn btn-primary" href="{{ response.data|dotClass|replace({'App.Entities':''})|replace({'.':'/'}) }}/{{ response.data.id }}/edit">EDIT</a>
     {% endif %}
+    {% for footer in api('/TwigTemplate/search/name=footer').data %}{{ footer.source|sandbox|markdown|purify|raw }}{% endfor %}
 {% endblock %}

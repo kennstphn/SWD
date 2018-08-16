@@ -73,14 +73,12 @@ class Request implements Request_interface
         return $this->post ? $this->post : $this->post = new ArrayCollection_superglobal($_POST);
     }
 
-     function session():ArrayCollection_superglobal{
-         if ($this->session ){return $this->session;}
-         if ( in_array(PHP_SAPI, ['cli','cli-server'] )){
-             return new ArrayCollection_superglobal();
-         }
-         session_start();
-         $this->session = new ArrayCollection_superglobal( $_SESSION);
-         return $this->session;
+    function session():ArrayCollection_superglobal{
+        if ($this->session ){return $this->session;}
+        //if ( in_array(PHP_SAPI, ['cli','cli-server'] )){return new ArrayCollection_superglobal();}
+        session_start();
+        $this->session = new ArrayCollection_superglobal( $_SESSION);
+        return $this->session;
     }
 
      function server():ArrayCollection_superglobal{
