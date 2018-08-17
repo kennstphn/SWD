@@ -2,11 +2,14 @@
 namespace SWD\Factories;
 
 
+use SWD\HtmlPurifier\ConfigurationFactory;
+
 class HtmlPurifier
 {
     protected static $purifier;
 
     function purify($htmlString, \HTMLPurifier_Config $config = null ){
+        $config = $config ?? self::safeConfigForUserInput();
         return $this->getPurifier()->purify($htmlString,$config);
     }
 
@@ -26,7 +29,10 @@ class HtmlPurifier
     }
     
     static function safeConfigForUserInput(){
-        return null;
+        return ConfigurationFactory::create(
+            ConfigurationFactory::DEFAULT
+        );
     }
+    
 
 }

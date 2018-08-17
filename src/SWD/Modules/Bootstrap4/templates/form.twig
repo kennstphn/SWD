@@ -1,10 +1,14 @@
-{% extends 'index.twig' %}
 {% macro renderForm(fieldList, method='post', url='') %}
     {% import _self as form %}
 
-    <form action="{{ url }}?redirect=this" method="{{ method }}" enctype="multipart/form-data" role="form">
+    <form
+            action="{{ url }}?redirect=this"
+            method="{{ method }}"
+            enctype="multipart/form-data"
+            role="form"
+            class="form-group"
+    >
         <input type="hidden" name="antiCsrfToken" >
-        <script>document.addEventListener('DOMContentLoaded',function(){$('[name="antiCsrfToken"]').val(token)})</script>
         {% for field in fieldList %}{{ form.renderFormField(field) }}{% endfor %}
         <button type="submit" onclick="this.form.submit();" class="btn btn-primary">Submit</button>
     </form>
@@ -60,12 +64,12 @@
             <img class="img-responsive" onclick="$('#{{ field.id }}').click()" style="margin:0 auto;" src="data:image/png;base64,{{ field.value|base64 }}"/>
         {% endif %}
         <input id='{{ field.id }}'
-               class="form-control"
+               class="form-control-file"
                type="file"
                {% if not field.readOnly %}data-name="{{ field.name }}"{% endif %}
                 {{ field.required ? 'required ' : '' }}
                 {{ field.readOnly ? ' readonly ' : '' }}
-                onchange="this.setAttribute('name', this.getAttribute('data-name'))"
+               onchange="this.setAttribute('name', this.getAttribute('data-name'))"
         >
     </div>
 {% endmacro %}
@@ -96,14 +100,14 @@
     </div>
 {% endmacro %}
 {% macro checkbox(field) %}
-    <div class='checkbox'>
+    <div class='form-check'>
         <label>
             <input
                     id="{{ field.id }}"
                     type='checkbox'
                     name='{{ field.name }}'
-                    {{ field.checked ?? checked }}
-                    {{ field.readonly ?? readonly }}
+                    {{ field.checked ? 'checked' : ''}}
+                    {{ field.readonly ? 'disabled':'' }}
             >{{ field.text ?? field.name }}
         </label>
     </div>
@@ -139,34 +143,34 @@
 {% endmacro %}
 
 {% macro select(field) %}
-<div class="form-group">
+    <div class="form-group">
 
-    {% if field.type == 'multiple' %}
-        {% set multiple = true %}
-    {% else %}
-        {% set multiple = false %}
-    {% endif %}
+        {% if field.type == 'multiple' %}
+            {% set multiple = true %}
+        {% else %}
+            {% set multiple = false %}
+        {% endif %}
 
-    <label for="{{ field.id }}">{{ field.label }}</label>
-    <select
-            id='{{ field.id }}'
-            class='form-control'
-            name='{{ field.name }}{{ field.type == 'multiple' ? '[]' :'' }}'
-            {{ field.type == 'multiple' ? 'multiple' : '' }}
-            {{ field.required ?? 'required' }}
-    >
-        {{ field.multiple ? '' : '<option selected disabled>Please make a selection</option>'|raw }}
-        {% for option in field.options %}
-            <option
-                    value='{{ option.value }}'
-                    data-optGroup="{{ option.optionGroup }}"
-                    {{ option.selected ? 'selected' : '' }}
-                    {{ option.disabled ? 'disabled' : ''}}
-            >{{ option.text ? option.text : option.value }}
-            </option>
-        {% endfor %}
-    </select>
-</div>
+        <label for="{{ field.id }}">{{ field.label }}</label>
+        <select
+                id='{{ field.id }}'
+                class='form-control'
+                name='{{ field.name }}{{ field.type == 'multiple' ? '[]' :'' }}'
+                {{ field.type == 'multiple' ? 'multiple' : '' }}
+                {{ field.required ?? 'required' }}
+        >
+            {{ field.multiple ? '' : '<option selected disabled>Please make a selection</option>'|raw }}
+            {% for option in field.options %}
+                <option
+                        value='{{ option.value }}'
+                        data-optGroup="{{ option.optionGroup }}"
+                        {{ option.selected ? 'selected' : '' }}
+                        {{ option.disabled ? 'disabled' : ''}}
+                >{{ option.text ? option.text : option.value }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
 
 {% endmacro %}
 
@@ -192,11 +196,11 @@
                 <div class="input-group-prepend">
                     <span class="input-group-text" onclick="this.parentNode.parentNode.removeChild(this.parentNode);">X</span>
                     <input
-                           class="form-control"
-                           type="text"
-                           name="{{ field.name }}[]"
-                           value="{{ class(val) == 'DateTime' ? dateTime(field.value) : val }}"
-                           placeholder="{{ field.placeholder }}"
+                            class="form-control"
+                            type="text"
+                            name="{{ field.name }}[]"
+                            value="{{ class(val) == 'DateTime' ? dateTime(field.value) : val }}"
+                            placeholder="{{ field.placeholder }}"
                     >
                 </div>
             {% endfor %}
@@ -204,10 +208,10 @@
             <div class="input-group-prepend">
                 <span class="input-group-text" onclick="this.parentNode.parentNode.removeChild(this.parentNode);">X</span>
                 <input
-                       class="form-control"
-                       type="text"
-                       name="{{ field.name }}[0]"
-                       placeholder="{{ field.placeholder }}"
+                        class="form-control"
+                        type="text"
+                        name="{{ field.name }}[0]"
+                        placeholder="{{ field.placeholder }}"
                 >
             </div>
         {% endif %}

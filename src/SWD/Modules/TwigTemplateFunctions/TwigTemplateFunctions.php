@@ -3,6 +3,8 @@ namespace SWD\Modules\TwigTemplateFunctions;
 
 
 use App\Factories\EntityManagerFactory;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\PersistentCollection;
 use SWD\DataController\EntityController;
 use SWD\DataController\FormParser;
 use SWD\Helper\TwigFilterCollection;
@@ -71,7 +73,7 @@ class TwigTemplateFunctions extends Module
         $twig->addFilter(TwigFilterCollection::base64());
 
         $twig->addFunction(new \Twig_SimpleFunction('entityMetadataList',function(){
-            
+
             return EntityManagerFactory::create()->getMetadataFactory()->getAllMetadata();
         }));
 
@@ -80,7 +82,7 @@ class TwigTemplateFunctions extends Module
 
         $twig->addFunction(new \Twig_SimpleFunction('formFields',function ($entity,$includeAssociations = false) use ($entityManager){
             $parser = new FormParser($entity, $entityManager);
-            
+
             return $parser->getFormFields();
         }));
 
@@ -134,8 +136,10 @@ class TwigTemplateFunctions extends Module
         $twig->addFilter(TwigFilterCollection::purify());
         $twig->addGlobal('safeTags','<p><br><hr><li><ul><ol><i><b><u><strong><h2><h3><h4><h5><h6><h7><h8><span>');
         $twig->addGlobal('token', $website->response()->getMeta()->get('antiCsrfToken'));
+        $twig->addFilter(TwigFilterCollection::entityUrl());
+
     }
-    
+
     static function api(Request_interface $request){
         return new \Twig_SimpleFunction('api',function($url, $get = array())use ($request){
             $request = Request::create(array(

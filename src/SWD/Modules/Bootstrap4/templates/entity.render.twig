@@ -1,0 +1,111 @@
+{% extends 'index.twig' %}
+
+{% block content %}
+    {% import _self as entityCard %}
+    <h1>{{ data.name }}</h1>
+    <div class="container">
+        {{ entityCard.panelize(data) }}
+    </div>
+{% endblock %}
+
+{% macro panelize(entity) %}
+    {% import _self as entityCard %}
+
+    <div class="card col-lg-12">
+        <div class="card-body">
+            <h5 class="card-title">{{ entity.name ?? entity.id }}<small>{{ entity|dotClass }}</small> </h5>
+            <div class="btn-group btn-group-sm">
+                <a href="{{ class(entity)|replace({'App\\Entities\\':'/'}) ~'/'~entity.id }}" class="btn btn-success">VIEW</a>
+                <a href="{{ class(entity)|replace({'App\\Entities\\':'/'})~'/'~entity.id~'/edit' }}" class="btn btn-primary">EDIT</a>
+                <a href="javascript:if(window.confirm('are you sure you want to delete {{ entity.name }}?')){$.post('{{ class(entity)|replace({'App\\Entities\\':'/',"\\":'/'})~'/'~entity.id~'/delete' }}?json',{antiCsrfToken:token}).done(function(){window.location.href='{{ class(entity)|replace({'App\\Entities\\':'/',"\\":"/"}) ~'/' }}';});};" class="btn btn-warning">DELETE</a>
+            </div>
+        </div>
+
+        <ul class="list-group list-group-flush">
+            {% for fieldName in metadata(entity).fieldNames %}
+                <li class="list-group-item text-truncate d-flex justify-content-between align-items-center" >
+                    <b class="mr-3">{{ fieldName }}:</b>
+                    <span>
+                    {% if fieldName == 'password' %}
+                        {{ '*******' }}
+                    {% elseif fieldName == 'file' %}
+                        {{ '<file not shown>'|escape }}
+                    {% elseif class(attribute(entity,fieldName)) == 'DateTime' %}
+                        {{ dateTime(attribute(entity,fieldName),'Y-m-d H:i:s') }}
+                    {% else %}
+                        {% if metadata(entity).fieldMapping(fieldName).type == 'text' %}
+                            {{ attribute(entity,fieldName) }}
+                        {% elseif metadata(entity).fieldMapping(fieldName).type == 'array' %}
+                            <ol class="list-group list-group-flush">
+                                {% for i in attribute(entity,fieldName) %}
+                                    <li class="list-group-item">{{ i }}</li>
+                                {% endfor %}
+                            </ol>
+                        {% elseif metadata(entity).fieldMapping(fieldName).type == 'blob' %}
+                            <img class="img-fluid" style="margin:0 auto;" src="{{ entity.url ?? entity.base64 }}"/>
+                        {% else %}
+                            {{ attribute(entity,fieldName) }}
+                        {% endif %}
+                        </span>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+        <ul class="list-group list-group-flush">
+            {% for name in metadata(entity).associationNames %}
+                {% set mapping = metadata(entity).associationMapping(name) %}
+                <li class="list-group-item text-truncate d-flex justify-content-between align-items-center" >
+                    <span>{{ name }}</span>
+                    {% if mapping.type < 4 %}
+                        <span>{{ entityCard.toOne(entity, metadata(entity).associationMapping(name)) }}</span>
+                    {% else %}
+                        <span>{{ entityCard.toMany(entity, metadata(entity).associationMapping(name)) }}</span>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+{% endmacro %}
+
+{% macro toOne(entity,map) %}
+    {% import _self as entityCard %}
+            {% set e = attribute(entity,map.fieldName) %}
+            {% if e is null and map.isOwningSide == false %}
+                <a class="btn btn-default" href="{{ domain ~ '/api/'~map.fieldName|replace({'App\\Entities\\':'','\\':'/'}) ~'/create' }}">Create</a>
+            {% elseif e is null and map.isOwningSide %}
+                <a role="button" class="btn btn-default disabled"  href="#">{{ '( none )'|e }}</a>
+            {% else %}
+                <a role="button" class="btn btn-default" href="{{ e|entityUrl }}">{{ e.name }}</a>
+            {% endif %}
+{% endmacro %}
+
+{% macro toMany(entity, map) %}
+    {% set list = attribute(entity,map.fieldName) %}
+    {% if list.count %}
+        <a class="btn btn-default" href="{{ list|entityUrl }}">list {{ list.count }}</a>
+    {% else %}
+        <a class="btn btn-default" href="#">none</a>
+    {% endif %}
+{% endmacro %}
+
+{% macro viewUrl(entity,map) %}
+    {% set fieldValue  = attribute(entity,map.fieldName) %}
+    {% if fieldValue is iterable %}
+        {% set idList = [] %}
+        {% for e in attribute(entity,map.fieldName) %}
+            {% set idList = idList|merge([e.id]) %}
+        {% endfor %}
+        {% set searchValue = 'IN'~idList|join(',') %}
+    {% else %}
+        {% set searchValue = '='~fieldValue.id %}
+    {% endif %}
+
+    {% if map.inversedBy is null %}
+        {% set search = '/search/id'~searchValue %}
+    {% else %}
+        {% set search = '/search/id'~searchValue %}
+    {% endif %}
+    {{ '/'~ map.targetEntity|replace({'App\\Entities\\' : '', '\\' : '/'}) ~ search }}
+{% endmacro %}
+

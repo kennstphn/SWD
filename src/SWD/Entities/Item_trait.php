@@ -6,6 +6,7 @@ trait Item_trait
 {
     protected $image;
     protected $title;
+    protected $name;
     protected $description;
     protected $action;
     protected $href;
@@ -14,11 +15,14 @@ trait Item_trait
     static function __loadItemMetadata($m)
     {
         $b = new \Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder($m);
+        $b->addUniqueConstraint(['name'], 'unique_name');
         $b->addManyToOne('image',File::class);
         $b->createField('title','string')->nullable(true)->build();
+        $b->addField('name', 'string');
         $b->createField('description','text')->nullable(true)->build();
         $b->createField('action','string')->nullable(true)->build();
         $b->createField('href','string')->nullable(true)->build();
+        $b->createField('priority', 'integer')->nullable(true)->build();
 
     }
 
@@ -118,11 +122,24 @@ trait Item_trait
     {
         $this->priority = $priority;
     }
-    
-    function getName()
+
+    /**
+     * @return mixed
+     */
+    public function getName()
     {
-        return $this->getTitle() ?? $this->getId();
+        return $this->name;
     }
+
+    /**
+     * @param mixed $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+    
+
 
 
 }

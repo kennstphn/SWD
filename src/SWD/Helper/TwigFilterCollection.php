@@ -1,5 +1,7 @@
 <?php
 namespace SWD\Helper;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\PersistentCollection;
 use SWD\Factories\HtmlPurifier;
 
 class TwigFilterCollection
@@ -24,6 +26,20 @@ class TwigFilterCollection
     static function purify():\Twig_SimpleFilter{
         return new \Twig_SimpleFilter('purify', function($text){
             return HtmlPurifier::create()->purify($text,HtmlPurifier::safeConfigForUserInput());
+        });
+    }
+
+    static function entityUrl():\Twig_SimpleFilter{
+        return new \Twig_SimpleFilter('entityUrl', function ($entityOrCollection) {
+            $classUrl = function($e){
+                return str_replace(['\\','App/Entities','DoctrineProxies/__CG__','//'],['/','','','/'] , get_class($e));
+            };
+            if(in_array(get_class($entityOrCollection),[PersistentCollection::class,ArrayCollection::class] )){
+                return $classUrl($entityOrCollection->first()).'/search/id,in,'.implode(',',array_map(
+                    function($a){return $a->getId();}
+                    ,$entityOrCollection->toArray() ));
+            }
+            return $classUrl($entityOrCollection).'/'.$entityOrCollection->getId();
         });
     }
 }

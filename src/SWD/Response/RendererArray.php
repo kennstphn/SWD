@@ -23,6 +23,10 @@ class RendererArray
         return $this->countByName($name) > 0;
     }
 
+    /**
+     * @param $name
+     * @return ResponseRenderer_interface[]
+     */
     function getByName($name){
         return $this->data->filter(
             function(ResponseRenderer_interface $r) use ($name){ return $r->getName() == $name;}

@@ -2,10 +2,10 @@
 {% block content %}
     <div class="container">
         <h1>{{ response.data.h1 }}</h1>
-        {{ response.data.content|sandbox|markdown|purify|raw }}
+        {{ response.data.content||markdown|purify|raw }}
     </div>
     {% if currentUser and currentUser.username != 'guest' %}
-        <a class="btn btn-primary" href="{{ response.data|dotClass|replace({'App.Entities':''})|replace({'.':'/'}) }}/{{ response.data.id }}/edit">EDIT</a>
+        <a class="btn btn-primary" href="{{ response.data|entityLink }}/edit">EDIT</a>
     {% endif %}
     {% for footer in api('/TwigTemplate/search/name=footer').data %}{{ footer.source|sandbox|markdown|purify|raw }}{% endfor %}
 {% endblock %}

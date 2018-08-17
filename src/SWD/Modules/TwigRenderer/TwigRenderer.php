@@ -24,6 +24,7 @@ class TwigRenderer extends Module
     protected $website;
 
     const TEMPLATE_NS_KEY='templateNS';
+    const RENDERER_CALLBACK_ARRAY_NAME=Twig::class;
 
 
     function __invoke(string $hookName, Website $website)

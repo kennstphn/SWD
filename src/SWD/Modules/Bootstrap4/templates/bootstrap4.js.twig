@@ -1,0 +1,16 @@
+$('[data-type][data-id]')
+        .hover(function(){
+            $(this).closest('[data-type][data-id]').addClass('border border-info')
+        },function(){
+            $(this).closest('[data-type][data-id]').removeClass('border border-info')
+        })
+        .click(function() {
+            var e = $(this).closest('[data-type][data-id]');
+            var url = e.attr('data-type').replace(/\./g, '/').replace('App/Entities', '') + '/' + e.attr('data-id') + '/edit'
+            var m = $('#bs4-modal');
+            m.modal();
+            m.find('.modal-content').html('<iframe style="height:90vh" src=' + url + '></iframe>');
+            m.find('iframe').on('load',function(){
+                $(this).on('load',function(){window.location.reload()})
+            })
+        });

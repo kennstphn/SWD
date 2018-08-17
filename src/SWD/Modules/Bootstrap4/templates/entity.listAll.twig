@@ -1,16 +1,14 @@
 {% extends 'index.twig' %}
 {% block content %}
     {% import 'entity.render.twig' as entityCard %}
-        <div class="container-fluid">
-            <h1> {{ entityClass|replace({'App\\Entities\\':''}) }} <span class="small">{{ h1 }}</span></h1>
-            <div class="row">
-                {% for entity in data %}
-                    <div class="col-lg-6">
-                        {{ entityCard.panelize(entity) }}
-                    </div>
-                {% endfor %}
-            </div>
-            {% if meta.pagination %}
+    <div class="container">
+        <h1> {{ entityClass|replace({'App\\Entities\\':''}) }} <span class="small">{{ h1 }}</span></h1>
+        <div class="row">
+            {% for entity in data %}
+                {{ entityCard.panelize(entity) }}
+            {% endfor %}
+        </div>
+        {% if meta.pagination %}
 
 
             <nav aria-label="Pagination">
@@ -29,7 +27,7 @@
                     </li>
                 </ul>
             </nav>
-            {% endif %}
-        </div>
+        {% endif %}
+    </div>
 
 {% endblock %}

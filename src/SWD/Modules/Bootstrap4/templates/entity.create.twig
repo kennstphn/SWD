@@ -2,7 +2,7 @@
 {% block content %}
     <div class="container">
         <h1>Create {{ class(data)|replace({'App\\Entities\\':''}) }}</h1>
-        {% import 'entity.form.twig' as form %}
+        {% import 'form.twig' as form %}
         {{ form.renderForm( formFields(data)) }}
     </div>
 {% endblock %}

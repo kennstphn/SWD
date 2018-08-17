@@ -1,0 +1,4 @@
+<div class="container">
+    <h1>{{ h1 ?? response.data.h1 }}</h1>
+    {{ ( content ?? response.data.content )|markdown|purify|raw }}
+</div>

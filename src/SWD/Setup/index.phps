@@ -34,6 +34,7 @@ try {
     $website->addModule($website::INIT,                 \SWD\Modules\Navigation\EntityNav::class);                         // Creates default Navigation related to entities.
 //    $website->addModule($website::INIT,                 \SWD\Modules\Redirect\Redirect::class);                 // enables redirect through \App\Entities\Redirect entities
     $website->addModule($website::INIT,                 \SWD\Modules\TwigRenderer\TwigRenderer::class);         // twig rendering module
+    $website->addModule($website::INIT_DONE,            new \SWD\Modules\Bootstrap4\Bootstrap4());
     $website->addModule($website::INIT,                 \SWD\Modules\AppConfiguration\AppConfiguration::class);
 
     $website->addModule($website::INIT_DONE,            \SWD\Modules\AccessControl\AccessControl::class);       // basic sitemap-enabled access control.

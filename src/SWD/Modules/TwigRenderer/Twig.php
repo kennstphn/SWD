@@ -89,12 +89,16 @@ class Twig extends \Twig_Environment implements ResponseRenderer_interface
                 header($header);
             }
         }
-        
+
         if ( $this->isBlockCall()){
             echo $template->renderBlock($this->getRequestedBlock(),$renderContext);
             return;
         }
-        echo $template->render($renderContext);
+        try{
+            echo $template->render($renderContext);
+        }catch (\Throwable $e){
+            echo $e->getMessage();
+        }
         return;
     }
 
