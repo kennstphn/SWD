@@ -14,11 +14,12 @@ use SWD\Request\Request_interface;
 use SWD\Structures\Bootstrap\Bootstrap;
 use SWD\Structures\Doctrine\AssociationMapping;
 use SWD\Structures\Doctrine\FieldMapping;
+use SWD\Structures\HelperTraits\DotClass;
 
 abstract class EntityBase implements Tracking_interface, EntityBase_interface, \JsonSerializable
 {
     const DATE_FORMAT = \DateTime::ATOM;
-    
+    use DotClass;
     protected $id, $changedBy, $lastModified;
 
     /**
