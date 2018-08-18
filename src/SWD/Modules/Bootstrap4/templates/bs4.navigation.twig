@@ -16,46 +16,6 @@
                     </li>
                 {% endfor %}
             </ul>
-            {% if currentUser and  currentUser.username != 'guest' %}
-                <div class="nav-item dropdown ">
-                    <button class="nav-link dropdown-toggle btn btn-dark" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Api
-                    </button>
-                    <div class="dropdown-menu" style="overflow-y:scroll;max-height:80vh;left:-9rem" >
-                        <span class="dropdown-item"><a class="btn btn-danger" href="/logout">Logout</a></span>
-                        {% for m in entityMetadataList() %}
-                            {% set link = m.name|replace({"\\":"."})|replace({"..":'.'})|replace({'App.Entities':''})|replace({'.':'/'}) %}
-                            <span class="dropdown-item d-flex " >
-                                    <small class="flex-grow-1">{{ link }} &nbsp;</small>
-                                    <span class="btn-group-vertical btn-group-sm">
-                                        <a class="btn btn-primary" href="{{ link }}?perPage=10">List</a><a class="btn btn-success" href="{{ link }}/create">Create</a>
-                                    </span>
-                            </span>
-                        {% endfor %}
-                    </div>
-                </div>
-            {% else %}
-                <div class="nav-item dropdown ">
-                    <button class="nav-link dropdown-toggle btn btn-dark" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Login
-                    </button>
-                    <div class="dropdown-menu" style="min-width:15rem;left:-9rem">
-                        <form class="px-4 py-3" method="post" action="/login?redirect=/">
-                            <div class="form-group">
-                                <label for="login-username">Username</label>
-                                <input type="text" name="username" class="form-control" id="login-username">
-                            </div>
-                            <div class="form-group">
-                                <label for="login-password">Password</label>
-                                <input type="password" name="password" class="form-control" id="login-password" placeholder="Password">
-                                <input type="hidden" name="antiCsrfToken" value="{{ token }}">
-                            </div>
-                            <button type="submit" class="btn btn-primary">Sign in</button>
-                        </form>
-                        <div class="dropdown-divider"></div>
-                    </div>
-                </div>
-            {% endif %}
         </div>
 
     </nav>

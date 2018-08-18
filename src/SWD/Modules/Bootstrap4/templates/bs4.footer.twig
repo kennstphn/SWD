@@ -1,4 +1,35 @@
-<footer class="container-fluid">
-    <p class="float-right"><a href="#">Back to top</a></p>
-    <p>&copy; {{ "now"|date('Y') }} {{ domain }} &middot; powered by <a href="https://shermanwebdesign.com">SWD</a> </p>
+<div class="container">
+    {% block apiLinks %}
+        {% if currentUser and  currentUser.username != 'guest' %}
+            {% set metadata = entityMetadataList() %}
+            {% set colMax = (metadata|length / 3) |round(0,'ceil') %}
+            <div class="row">
+                <div class="col-sm list-group">
+                    {% for m in metadata %}
+
+                    {% if loop.index0 > 0 and loop.index0 is divisible by(colMax) %}
+                </div><div class="col-sm list-group">
+                    {% endif %}
+                    <div class="list-group-item">
+                        {% set link = m.name|replace({"\\":"."})|replace({"..":'.'})|replace({'App.Entities':''})|replace({'.':'/'}) %}
+                        <div class="btn-group d-flex" role="group">
+                            <a class="btn btn-secondary w-100 text-light" >{{ link }}</a>
+                            <a class="btn btn-primary w-100" href="{{ link }}" role="button">List</a>
+                            <a class="btn btn-success w-100" href="{{ link }}/create">Create</a>
+                        </div>
+
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+    {% endblock %}
+
+</div>
+<footer >
+    <div class="container-fluid">
+        <div class="row justify-content-sm-center">
+            <div class="col-sm-4">&copy; {{ "now"|date('Y') }} {{ domain }} &middot; powered by <a href="https://shermanwebdesign.com">SWD</a> | <a href="{{ currentUser.username=='guest' ? '/login' : '/logout' }}">{{ currentUser.username=='guest' ? 'login' : 'logout' }}</a></div>
+        </div>
+    </div>
 </footer>

@@ -40,7 +40,6 @@ class DatabaseLoader implements \Twig_LoaderInterface
 
     public function isFresh($name, $time)
     {
-        return false;
         return $this->getTemplateByName($name)->getLastModified()->getTimestamp() < $time;
     }
 

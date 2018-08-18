@@ -1,11 +1,7 @@
 {% extends 'index.twig' %}
 {% block content %}
-    <div class="container">
+    <div class="container" data-type="{{ response.data.dotClass }}" data-id="{{ response.data.id }}">
         <h1>{{ response.data.h1 }}</h1>
-        {{ response.data.content||markdown|purify|raw }}
+        {{ response.data.content|markdown|purify|raw }}
     </div>
-    {% if currentUser and currentUser.username != 'guest' %}
-        <a class="btn btn-primary" href="{{ response.data|entityLink }}/edit">EDIT</a>
-    {% endif %}
-    {% for footer in api('/TwigTemplate/search/name=footer').data %}{{ footer.source|sandbox|markdown|purify|raw }}{% endfor %}
 {% endblock %}

@@ -61,7 +61,7 @@
     <div class="form-group">
         <label for="{{ field.id }}">{{ field.label }}</label>
         {% if field.value %}
-            <img class="img-responsive" onclick="$('#{{ field.id }}').click()" style="margin:0 auto;" src="data:image/png;base64,{{ field.value|base64 }}"/>
+            <img class="img-fluid" onclick="$('#{{ field.id }}').click()" style="margin:0 auto;" src="data:image/png;base64,{{ field.value|base64 }}"/>
         {% endif %}
         <input id='{{ field.id }}'
                class="form-control-file"
