@@ -4,10 +4,10 @@
     {% endif %}
     <div class="card-body" data-type="{{ card|dotClass }}" data-id="{{ card.id }}">
         {% if card.title %}
-            <p class="card-title text-uppercase font-weight-bold">{{ card.title }}</p>
+            <p class="card-title text-uppercase font-weight-bold" data-type="{{ card|dotClass }}" data-id="{{ card.id }}" data-field="title">{{ card.title }}</p>
         {% endif %}
         {% if card.description %}
-            <p class="card-text">{{ card.description | markdown | purify |raw }}</p>
+            <div class="card-text" data-type="{{ card|dotClass }}" data-id="{{ card.id }}" data-field="description">{{ card.description | markdown | purify |raw }}</div>
         {% endif %}
         {% if ( card.href ?? card.action )  %}
             <a href="{{ card.href ?? '#' }}" class="btn btn-primary">{{ card.action}}</a>

@@ -165,13 +165,16 @@ class EntityController implements Controller_interface
         $this->em->persist($newEntity);
         $this->updateEntityFromPostedData($newEntity);
         $this->em->flush();
-        
+
         if($this->request->get()->get('redirect') == 'this'){
             $this->response->setRedirect(
                 str_replace('/create', '/'.$newEntity->getId().'/edit',$this->request->url()->__toString() ),
                 301
             );
-        }else{
+        }elseif($this->request->get()->containsKey('redirect')){
+            $this->response->setRedirect($this->request->get()->get('redirect'),301);
+
+        } else{
             $this->response->setResponseCode(200);
             $this->response->setData($newEntity);
         }
@@ -202,9 +205,18 @@ class EntityController implements Controller_interface
         $this->em->persist($entity);
         $this->updateEntityFromPostedData($entity);
         $this->em->flush();
-        
-        $this->response->setResponseCode(200);
-        $this->response->setData($entity);
+
+        if($this->request->get()->get('redirect') == 'this'){
+            $this->response->setRedirect(
+                str_replace('/create', '/'.$entity->getId().'/edit',$this->request->url()->__toString() ),
+                301
+            );
+        }elseif($this->request->get()->containsKey('redirect')){
+            $this->response->setRedirect($this->request->get()->get('redirect'),301);
+        } else{
+            $this->response->setResponseCode(200);
+            $this->response->setData($entity);
+        }
         return;
     }
 

@@ -30,42 +30,17 @@ abstract class Sitemap implements ControlledUrl_interface
 
     }
 
-    static function html(Response_interface $response){
+    protected static function html(Response_interface $response){
         $response->setData(self::getEntries());
         $response->setTemplate('sitemap.twig');
     }
     
-    static function xml(Response_interface $response){
+    protected static function xml(Response_interface $response)
+    {
         $response->setData(self::getEntries());
-        $response->addRenderCallback(new ResponseRenderer(
-            function(Response_interface $response){
-                try{
-                    header('Content-type: application/xml');
-                    echo TwigRenderer::sandbox()
-                        ->createTemplate(
-                            
-    '<?xml version="1.0" encoding="UTF-8"?>
-    <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-        {% for item in response.data %}
-        <url>
-            <loc>{{ item.loc }}</loc>
-            <lastmod>{{ item.lastModified.format(\'Y-m-d\') }}</lastmod>
-            <changefreq>{{ item.changeFrequency ?? \'weekly\' }}</changefreq>
-            <priority>{{ item.priority ?? \'0.8\' }}</priority>
-        </url>
-        {% endfor %}
-    </urlset>'
-                        )->render(['response'=>$response]);
-                }catch (\Throwable $e){
-                    echo $e->getMessage();
-                }
-            },
-            1,//priority
-            'xml-closure' //name
-            // check for ability to render
-        ));
-    }
-    
+        $response->setTemplate('sitemap.xml.twig');
+
+    }    
     protected static function getEntries(){
         return EntityManagerFactory::create()->createQueryBuilder()
             ->select('s')->from(\App\Entities\Sitemap::class,'s')->where('s.includeInSitemap = 1')

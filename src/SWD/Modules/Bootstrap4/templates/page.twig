@@ -1,7 +1,9 @@
 {% extends 'index.twig' %}
 {% block content %}
     <div class="container" data-type="{{ response.data.dotClass }}" data-id="{{ response.data.id }}">
-        <h1>{{ response.data.h1 }}</h1>
-        {{ response.data.content|markdown|purify|raw }}
+        <h1 data-type="{{ response.data|dotClass }}" data-id="{{ response.data.id }}" data-field="h1" >{{ response.data.h1 }}</h1>
+        <div class="content" data-type="{{ response.data|dotClass }}" data-id="{{ response.data.id }}" data-field="content">
+            {{ response.data.content}}
+        </div>
     </div>
 {% endblock %}

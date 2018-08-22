@@ -5,7 +5,7 @@
         {% block form %}
             {% set action = request.get.containsKey('action') ? request.get.containsKey('action') : ('/'~ ( ( class(data)|replace({'\\':'/'}) )|replace({'App/Entities/':''}) ) ~ '/' ~  data.id ~ '/edit') %}
             {% import 'form.twig' as form %}
-            {{ form.renderForm(formFields(data), 'post', action ) }}
+            {{ form.renderForm(formFields(data), 'post', action , request.server.get('HTTP_REFERER')|url_encode ) }}
         {% endblock form %}
     </div>
 {% endblock %}

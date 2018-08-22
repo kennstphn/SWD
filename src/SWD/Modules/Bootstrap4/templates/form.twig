@@ -1,8 +1,8 @@
-{% macro renderForm(fieldList, method='post', url='') %}
+{% macro renderForm(fieldList, method='post', url='',redirect = false) %}
     {% import _self as form %}
 
     <form
-            action="{{ url }}?redirect=this"
+            action="{{ url }}{{ redirect ? '?redirect='~redirect : '' }}"
             method="{{ method }}"
             enctype="multipart/form-data"
             role="form"

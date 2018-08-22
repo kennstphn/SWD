@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    {% for entry in response.data %}
+    <url>
+        <loc>//{{ domain }}{{ entry.loc ?? entry.url }}</loc>
+        <lastmod>2018-08-17</lastmod>
+        <changefreq>{{ entry.changeFreq ?? 'weekly' }}</changefreq>
+        <priority>{{ entry.priority ?? '0.8' }}</priority>
+    </url>
+    {% endfor %}
+</urlset>
