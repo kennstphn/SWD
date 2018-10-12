@@ -2,6 +2,7 @@
 namespace SWD\Modules\TwigTemplateFunctions;
 
 
+use App\Entities\Item;
 use App\Factories\EntityManagerFactory;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\PersistentCollection;
@@ -73,8 +74,13 @@ class TwigTemplateFunctions extends Module
         $twig->addFilter(TwigFilterCollection::base64());
 
         $twig->addFunction(new \Twig_SimpleFunction('entityMetadataList',function(){
-
-            return EntityManagerFactory::create()->getMetadataFactory()->getAllMetadata();
+            $classes=EntityManagerFactory::listEntityClasses();
+            $em = EntityManagerFactory::create();
+            $mList = [];
+            foreach($classes as $class){
+                array_push($mList,$em->getClassMetadata($class));
+            }
+            return $mList;
         }));
 
         $twig->addFunction(self::api($website->request()));

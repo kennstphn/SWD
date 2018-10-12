@@ -90,6 +90,16 @@ abstract class EntityManagerFactory
                     break;
             }
         }}
+        foreach(self::$classList as $registeredClass){
+            if ( ! in_array($registeredClass, $classes)){
+                array_push($classes, $registeredClass);
+            }
+        }
         return $classes;
+    }
+
+    static protected $classList = [];
+    static function registerEntityClass($class){
+        array_push(self::$classList, $class);
     }
 }

@@ -36,12 +36,13 @@ class TwigRenderer extends Module
 
         foreach(scandir($path) as $subfolder){
             if(in_array($subfolder, array('.','..'))){continue;}
+            if( ! is_dir($path.'/'.$subfolder)){continue;}
             $loader->addPath($path.'/'.$subfolder, $subfolder);
         }
-
+        
         $options = array('debug'=>true,'cache'=>false);
 
-        $loaderChain = new \Twig_Loader_Chain([$loader]);
+        $loaderChain = new \Twig_Loader_Chain([$loader,new RegistrationLoader()]);
         
         $twig = new Twig($loaderChain,$options);
 
@@ -192,5 +193,8 @@ class TwigRenderer extends Module
     static protected function getSandboxProperties(){
         return [];
     } 
-
+    
+    static function registerTemplate($name, $string, $overwritePreviouslyRegistered = false){
+        RegistrationLoader::registerTemplate($name, $string,$overwritePreviouslyRegistered);
+    }
 }

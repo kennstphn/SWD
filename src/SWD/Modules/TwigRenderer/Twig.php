@@ -49,6 +49,12 @@ class Twig extends \Twig_Environment implements ResponseRenderer_interface
             foreach($factory->getFilters() as $filter){
                 $this->addFilter($filter);
             }
+
+            if(is_callable([$factory, 'getGlobals'])){
+                foreach($factory->getGlobals() as $name=>$value){
+                    $this->addGlobal($name,$value );
+                }
+            }
         }
     }
 

@@ -30,6 +30,7 @@ try {
 
     \SWD\Modules\DataControllerHookBridge::init($website);
 
+    $website->addModule($website::INIT,                 \SWD\Modules\YoutubePlaylist\YoutubePlaylist::class); //adds entity and 'youtube-playlist.twig';
     $website->addModule($website::INIT,                 \SWD\Modules\EntityInstaller\EntityInstaller::class);   // Installs entities on each request. Helpful for development mode.
     $website->addModule($website::INIT,                 \SWD\Modules\Navigation\EntityNav::class);                         // Creates default Navigation related to entities.
 //    $website->addModule($website::INIT,                 \SWD\Modules\Redirect\Redirect::class);                 // enables redirect through \App\Entities\Redirect entities

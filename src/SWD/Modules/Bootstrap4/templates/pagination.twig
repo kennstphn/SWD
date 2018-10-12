@@ -1,0 +1,27 @@
+{% set start = 1 %}
+{% set max = (pagination.total / pagination.perPage)|round('ceil') + 1 %}
+{% set prev = pagination.page - 1 > 0 ? pagination - 1 : 1 %}
+{% set next = pagination.page + 1 <= max ? pagination.page + 1 : max %}
+
+
+<nav aria-label="pagination">
+    <ul class="pagination pagination-sm">
+        <li class="page-item ">
+            <a class="page-link" href="javascript:window.location.href=(new URI(window.location.href)).setSearch('page','{{ start }}');" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+                <span class="sr-only">Start</span>
+            </a>
+        </li>
+
+        {% for i in range(prev, next) %}
+        <li class="{{ i == pagination.page ? 'active':'' }} page-item"><a class="page-link" href="javascript:window.location.href=(new URI(window.location.href)).setSearch('page','{{ i }}');">{{ i }}</a></li>
+        {% endfor %}
+
+        <li class="page-item">
+            <a class="page-link" href="javascript:window.location.href=(new URI(window.location.href)).setSearch('page','{{ max }}');" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+                <span class="sr-only">Max</span>
+            </a>
+        </li>
+    </ul>
+</nav>

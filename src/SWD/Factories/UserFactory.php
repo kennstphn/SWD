@@ -5,10 +5,12 @@ namespace SWD\Factories;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\NoResultException;
 use App\Factories\EntityManagerFactory;
+use SWD\DataController\DataControllerFactory;
 use SWD\Modules\AccessControl\User_interface;
 use SWD\Modules\AccessControl\UserFactory_interface;
 use SWD\Request\Request_interface;
 use SWD\Request\UrlParserFactory;
+use SWD\Website\Website;
 
 class UserFactory implements UserFactory_interface
 {
@@ -42,8 +44,8 @@ class UserFactory implements UserFactory_interface
 
     static function getCurrentUser(Request_interface $request):User_interface
     {
-        if(class_exists('App\\Factories\\UserFactory')){
-            return call_user_func(['App\\Factories\\UserFactor', 'getCurrentUser'],$request);
+        if(get_called_class() !== 'App\\Factories\\UserFactory' && class_exists('App\\Factories\\UserFactory')){
+            return call_user_func(['App\\Factories\\UserFactory', 'getCurrentUser'],$request);
         }
         /** @var UserFactory_interface $thisClass */
         $thisClass = get_called_class();
@@ -76,9 +78,6 @@ class UserFactory implements UserFactory_interface
         $class  ='App\\Entities\\Sitemap';
         if ( ! class_exists($class)){throw new \Exception(self::class.' depends on (missing) '.$class);}
 
-        $count = $em->createQueryBuilder()->select('count(e.id)')->from($class,'e')
-            ->where('e.loc = :url')->andWhere('e.includeInSitemap = 1')->setParameter('url', $request->url()->__toString())
-            ->getQuery()->getSingleScalarResult();
 
         //allow non-entityAction requests to /sitemap.xml
         if (
@@ -103,10 +102,14 @@ class UserFactory implements UserFactory_interface
 
 
 
+        $count = $em->createQueryBuilder()->select('count(e.id)')->from($class,'e')
+            ->where('e.loc = :url')->setParameter('url', $request->url()->__toString())
+            ->getQuery()->getSingleScalarResult();
         if ( $count == 0 && strtolower($user->getUsername()) == 'guest'){
             return false;
         }
 
+        
         return true;
     }
 

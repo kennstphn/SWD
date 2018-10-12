@@ -59,29 +59,23 @@ class Composer
          */
         $createEntityManager = function ()use($event, $writeFile, $assumeLoc){
             if($event->getIO()->askConfirmation('would you like to create App\\Factories\\EntityManagerFactory now?'.PHP_EOL)){
-                $user = $event->getIO()->ask('please enter the username to use for mysql'.PHP_EOL);
-                $password = $event->getIO()->ask('please enter the password to use for mysql'.PHP_EOL);
-                $dbName = $event->getIO()->ask('please enter the database name to use for mysql'.PHP_EOL);
-
-                $file = EntityManagerFactory::$file;
+                $user = trim($event->getIO()->ask('please enter the username to use for mysql'.PHP_EOL));
+                $password = trim($event->getIO()->ask('please enter the password to use for mysql'.PHP_EOL));
+                $dbName = trim($event->getIO()->ask('please enter the database name to use for mysql'.PHP_EOL));
+                
+                $file = __DIR__.'/Factories/EntityManagerFactory.php';
                 $file = str_replace([
-                    'namespace SWD\Factories',
-                    'abstract class EntityManagerFactory',
-                    'user():string;',
-                    'password():string;',
-                    'dbname():string;',
-                    'entityDirectory():string;',
-                    'abstract'
-                ],[
-                    'namespace App\Factories',
-                    'class EntityManagerFactory',
-                    'user():string{return \''.$user.'\'; }',
-                    'password():string{return \''.$password.'\'; }',
-                    'dbname():string{return \''.$dbName.'\'; }',
-                    'entityDirectory():string{ return \''.$assumeLoc.'/src/App/Entities\' ;}',
-                    ''
-                ],file_get_contents($file));
-
+                    '//user',
+                    '//password',
+                    '//dbname',
+                    '//entityDirectory'
+                ], [
+                    "return '{$user}';",
+                    "return '{$password}';",
+                    "return '{$dbName}';",
+                    "return '{$assumeLoc}/src/App/Entities';"
+                ], file_get_contents($file));
+                
                 $writeFile($assumeLoc . '/src/App/Factories','EntityManagerFactory.php', $file);
             }
         };
@@ -139,7 +133,14 @@ class Composer
     }
 
     protected static function getHtaccessText(){
-        return 'FallbackResource /index.php';
+        return implode(PHP_EOL,[
+            'RewriteEngine On',
+            'RewriteBase /',
+            '',
+            'RewriteRule ^css(/?[0-9]*)/(.*)?$ css/$2 [QSA,L]',
+            'RewriteRule ^js(/?[0-9]*)/(.*)?$ js/$2 [QSA,L]',
+            'FallbackResource /index.php'
+        ]);
     }
 
     protected static function getIndexPage(){

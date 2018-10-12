@@ -106,8 +106,8 @@ class Search
 
     }
 
-    function getPaginator(Request_interface $request){
-        $pagination = new PaginationParser($this->getQuery(),$request);
+    function getPaginator(Request_interface $request,$defaults=['perPage'=>10,'page'=>1]){
+        $pagination = new PaginationParser($this->getQuery(),$request,$defaults);
 
         return $pagination;
     }
