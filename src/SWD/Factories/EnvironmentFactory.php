@@ -36,6 +36,9 @@ class EnvironmentFactory
         
     }
     
+    static function get($name){
+        return self::find()->$name;
+    }
     
 
 

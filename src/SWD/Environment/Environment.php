@@ -11,7 +11,7 @@ class Environment implements Environment_interface
 
     function get(string $key)
     {
-        return $this->data[$key];
+        return array_key_exists($key, $this->data )?$this->data[$key]:null;
     }
     
     function dbname():string
