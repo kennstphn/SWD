@@ -18,7 +18,9 @@ class EnvironmentFactory
      */
     static function find():Environment_interface
     {
-        if(class_exists(self::APP_VERSION)){return call_user_func([self::APP_VERSION, 'find']);}
+        if(class_exists(self::APP_VERSION) && ! get_called_class() == self::APP_VERSION){
+            return call_user_func([self::APP_VERSION, 'find']);
+        }
         if( ! self::$found){throw new EnvironmentNotInitialized();}
         return self::$found;
     }
