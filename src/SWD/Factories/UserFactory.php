@@ -4,13 +4,10 @@ namespace SWD\Factories;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\NoResultException;
-use SWD\Factories\EntityManagerFactory;
-use SWD\DataController\DataControllerFactory;
 use SWD\Modules\AccessControl\User_interface;
 use SWD\Modules\AccessControl\UserFactory_interface;
 use SWD\Request\Request_interface;
 use SWD\Request\UrlParserFactory;
-use SWD\Website\Website;
 
 class UserFactory implements UserFactory_interface
 {
@@ -19,13 +16,20 @@ class UserFactory implements UserFactory_interface
 
     static function getUserClass():string
     {
+        if(get_called_class() !== 'App\\Factories\\UserFactory' && class_exists('App\\Factories\\UserFactory')){
+            return call_user_func(['App\\Factories\\UserFactory', 'getUserClass']);
+        }
         return 'App\\Entities\\User';
     }
+    
 
 
 
     static function getGuestUser(EntityManager $em):User_interface
     {
+        if(get_called_class() !== 'App\\Factories\\UserFactory' && class_exists('App\\Factories\\UserFactory')){
+            return call_user_func(['App\\Factories\\UserFactory', 'getGuestUser'],$em);
+        }
         $thisClass = get_called_class();
         try{
             $u = $em->createQueryBuilder()->select('e')->from(call_user_func(array($thisClass,'getUserClass')), 'e')
@@ -61,12 +65,18 @@ class UserFactory implements UserFactory_interface
 
 
     static function setPersistantUser(User_interface $user){
+        if(get_called_class() !== 'App\\Factories\\UserFactory' && class_exists('App\\Factories\\UserFactory')){
+            return call_user_func(['App\\Factories\\UserFactory', 'setPersistantUser'],$user);
+        }
         if ( session_status() === PHP_SESSION_DISABLED){throw new \Exception('Sessions are disabled');}
         if ( session_status() === PHP_SESSION_NONE){session_start();}
         $_SESSION[self::STORED_USER_KEY] = $user->getId();
     }
 
     static function removePersistantUser(){
+        if(get_called_class() !== 'App\\Factories\\UserFactory' && class_exists('App\\Factories\\UserFactory')){
+            return call_user_func(['App\\Factories\\UserFactory', 'removePersistantUser']);
+        }
         if ( session_status() === PHP_SESSION_DISABLED){throw new \Exception('Sessions are disabled');}
         if ( session_status() === PHP_SESSION_NONE){session_start();}
         $_SESSION[self::STORED_USER_KEY] = null;
@@ -74,6 +84,9 @@ class UserFactory implements UserFactory_interface
 
     static function userCan(User_interface $user, Request_interface $request, EntityManager $em):bool
     {
+        if(get_called_class() !== 'App\\Factories\\UserFactory' && class_exists('App\\Factories\\UserFactory')){
+            return call_user_func_array(['App\\Factories\\UserFactory', 'userCan'],[$user,$request,$em]);
+        }
         if ( substr($request->url()->__toString(), 0,6) == '/login'){return true;}
         $class  ='App\\Entities\\Sitemap';
         if ( ! class_exists($class)){throw new \Exception(self::class.' depends on (missing) '.$class);}
