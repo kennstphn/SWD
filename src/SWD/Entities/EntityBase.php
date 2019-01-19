@@ -85,8 +85,6 @@ abstract class EntityBase implements Tracking_interface, EntityBase_interface, \
         return $this->lastModified;
     }
     
-    abstract function getName();
-
     function jsonSerialize()
     {
         $type = get_class($this);
