@@ -94,7 +94,7 @@ class Send
             $email->setSent(null);
             return false;
         } else {
-            $email->setSent(new \DateTime());
+            $email->setSent((new \DateTime())->setTimezone(new \DateTimeZone('UTC')));
             return true;
         }
     }
