@@ -10,6 +10,8 @@ use SWD\Website\Website;
 class EntityInstaller extends Module
 {
     const PREFERRED_HOOK = Website::INIT_DONE;
+    const PRE_INSTALL = self::class.'.preInstall';
+    const POST_INSTALL = self::class.'.postInstall';
     static $install = false;
 
     function __invoke(string $hookName, Website $website)
@@ -17,6 +19,9 @@ class EntityInstaller extends Module
         if( ! EnvironmentFactory::find()->runEntityInstaller ){
             return;
         }
+
+        $website->invokeModulesByHook(self::PRE_INSTALL);
+
         $classList = EntityManagerFactory::listEntityClasses();
         $entityManager = EntityManagerFactory::create();
 
@@ -27,6 +32,8 @@ class EntityInstaller extends Module
 
         $tool = new SchemaTool($entityManager);
         $tool->updateSchema($metadataArray);
+
+        $website->invokeModulesByHook(self::POST_INSTALL);
 
     }
 
