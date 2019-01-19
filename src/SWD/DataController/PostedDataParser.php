@@ -48,15 +48,7 @@ class PostedDataParser
             call_user_func(array($entity,$method),$data);
             return;
         }
-
-        if($name == 'lastModified' && is_callable([$entity,'setLastModified'])){
-            $entity->setLastModified(new \DateTime());
-            return;
-        }
-
-        if ($name == 'changedBy' && class_exists($entity::USER_FACTORY) ){
-
-        }
+        
     }
     
     protected function isFieldInRequest($name){

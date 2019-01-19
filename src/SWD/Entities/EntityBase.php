@@ -11,7 +11,6 @@ use SWD\DataController\Tracking_interface;
 use SWD\Modules\AccessControl\AccessControl;
 use SWD\Request\Request;
 use SWD\Request\Request_interface;
-use SWD\Structures\Bootstrap\Bootstrap;
 use SWD\Structures\Doctrine\AssociationMapping;
 use SWD\Structures\Doctrine\FieldMapping;
 use SWD\Structures\HelperTraits\DotClass;
@@ -43,6 +42,7 @@ abstract class EntityBase implements Tracking_interface, EntityBase_interface, \
     function __construct()
     {
         $this->lastModified = new \DateTime();
+        $this->lastModified->setTimezone(new \DateTimeZone('UTC'));
         if ( $userFactory = AccessControl::getUserFactory()){
             $this->setChangedBy($userFactory::getCurrentUser(Request::create()));
         }
