@@ -1,8 +1,13 @@
 <?php
-include_once '../vendor/autoload.php';
+define('ROOT_DIR',implode(DIRECTORY_SEPARATOR,array_slice(explode(DIRECTORY_SEPARATOR,__DIR__),0,-1 )));
+define('VENDOR_DIRECTORY',ROOT_DIR.'/vendor');
+define('PUBLIC_DIR',__DIR__);
+
+include_once VENDOR_DIRECTORY.'/autoload.php';
+
 spl_autoload_register(function($class){
     $relfile = str_replace('\\','/',$class).'.php';
-    $directory = str_replace('public_html', 'src', __DIR__);
+    $directory = ROOT_DIR.'/src';
     $file = str_replace('//', '/', $directory.'/'.$relfile);
     if($relfile == 'SWD/Modules/TwigRenderer/Twig.php'){
         @include_once $file;return; // patch for renderer call interface inconsistency
@@ -10,39 +15,22 @@ spl_autoload_register(function($class){
     if (file_exists($file)){include_once $file;}
 });
 
-define('VENDOR_DIRECTORY',str_replace('public','vendor',__DIR__));
-define('PUBLIC_DIR',__DIR__);
-
-
 
 
 try {
-    $theRequest = \SWD\Request\Request::create(array(
-        //todo remove the following line in production.
-        'get'=> array_merge($_GET,array('install'=>'force')),
-
-    ));
-
+    SWD\Factories\EnvironmentFactory::init($_SERVER['HTTP_HOST']);
+    $theRequest = \SWD\Request\Request::create();
+    
     $website = new \SWD\Website\Website($theRequest,new \SWD\Response\Response() );
-    $website->setDebugMode(
-        $theRequest->get()->getBool('debug') ? $website::DEBUG_TRUE : $website::DEBUG_FALSE
-    );
+    $website->setDebugMode(\SWD\Factories\EnvironmentFactory::find()->debug);
 
     \SWD\Modules\DataControllerHookBridge::init($website);
 
-    $website->addModule($website::INIT,                 \SWD\Modules\YoutubePlaylist\YoutubePlaylist::class); //adds entity and 'youtube-playlist.twig';
     $website->addModule($website::INIT,                 \SWD\Modules\EntityInstaller\EntityInstaller::class);   // Installs entities on each request. Helpful for development mode.
-    $website->addModule($website::INIT,                 \SWD\Modules\Navigation\EntityNav::class);                         // Creates default Navigation related to entities.
-//    $website->addModule($website::INIT,                 \SWD\Modules\Redirect\Redirect::class);                 // enables redirect through \App\Entities\Redirect entities
     $website->addModule($website::INIT,                 \SWD\Modules\TwigRenderer\TwigRenderer::class);         // twig rendering module
-    $website->addModule($website::INIT_DONE,            new \SWD\Modules\Bootstrap4\Bootstrap4());
-    $website->addModule($website::INIT,                 \SWD\Modules\AppConfiguration\AppConfiguration::class);
-
     $website->addModule($website::INIT_DONE,            \SWD\Modules\AccessControl\AccessControl::class);       // basic sitemap-enabled access control.
-
     $website->addModule($website::RENDER_BEFORE,        \SWD\Modules\JsonRenderingSwitch\JsonRenderingSwitch::class);       // enables render-engine skipping via $_GET['json'] parameter
     $website->addModule($website::RENDER_BEFORE,        \SWD\Modules\TwigTemplateFunctions\TwigTemplateFunctions::class);   // adds helpful twig function add-ons.
-
 
     $website->run();
 
@@ -51,19 +39,21 @@ try {
     http_response_code($httpCode);
     if (array_key_exists('json',$_GET)){
         header('Content-type: application/json');
-        echo json_encode(['errors'=>[
-            array(
-                'details'=>$e->getMessage() //todo depreciate this
-            ,'code'=>(string)$httpCode
-            ,'detail'=>$e->getMessage()
-            ,'meta'=>[
-                'type'=>get_class($e)
-                ,'file'=>$e->getFile()
-                ,'line'=>$e->getLine()
-                ,'trace'=>$e->getTraceAsString()
-            ]
-            )
-        ]]);
+        echo json_encode(
+            ['errors'=>[
+                [
+                    'code'=>(string)$httpCode
+                    ,'detail'=>$e->getMessage()
+                    ,'meta'=> 
+                    [
+                        'type'=>get_class($e)
+                        ,'file'=>$e->getFile()
+                        ,'line'=>$e->getLine()
+                        ,'trace'=>$e->getTraceAsString()
+                    ]
+                ]
+            ]]
+        );
     }else{
         echo array_key_exists('json',$_GET) ? : '<pre>'. implode(PHP_EOL,array(
                 'CLASS/Type: '.get_class($e),

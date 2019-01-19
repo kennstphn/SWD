@@ -54,36 +54,32 @@ class Composer
         };
         $createAppSubDirectories();
 
+        $makeDir($assumeLoc.'/environments');
+
         /*
-         * Init the EntityManager
+         * Init environment db connection
          */
-        $createEntityManager = function ()use($event, $writeFile, $assumeLoc){
-            if($event->getIO()->askConfirmation('would you like to create App\\Factories\\EntityManagerFactory now?'.PHP_EOL)){
+        $createEntityManager = function ()use($event, $writeFile, $assumeLoc,$makeDir){
+            if($event->getIO()->askConfirmation('would you like to create an environment in ./envoronments now?'.PHP_EOL)){
                 $user = trim($event->getIO()->ask('please enter the username to use for mysql'.PHP_EOL));
                 $password = trim($event->getIO()->ask('please enter the password to use for mysql'.PHP_EOL));
                 $dbName = trim($event->getIO()->ask('please enter the database name to use for mysql'.PHP_EOL));
+                $dbhost = trim($event->getIO()->ask('please enter the host or proceed to use "localhost" ' . PHP_EOL, 'localhost'));
                 
-                $file = __DIR__.'/Factories/EntityManagerFactory.php';
-                $file = str_replace([
-                    '//user',
-                    '//password',
-                    '//dbname',
-                    '//entityDirectory'
-                ], [
-                    "return '{$user}';",
-                    "return '{$password}';",
-                    "return '{$dbName}';",
-                    "return '{$assumeLoc}/src/App/Entities';"
-                ], file_get_contents($file));
-                
-                $writeFile($assumeLoc . '/src/App/Factories','EntityManagerFactory.php', $file);
+                $filename = trim($event->getIO()->ask('Please enter the domain name that will be used to access the site. '.PHP_EOL));
+                self::write_ini_file($assumeLoc.'/environments/'.$filename.'.ini',[
+                    'dbuser'=>$user,
+                    'dbpwd'=>$password,
+                    'dbname'=>$dbName,
+                    'dbhost'=>$dbhost
+                ]);
             }
         };
         $createEntityManager();
 
 
         /*
-         * INDEX.PHP PAGE
+         * index.php 
          */
         $createIndexPage = function ()use($assumeLoc,$writeFile){
             $writeFile($assumeLoc.'/public_html','index.php',self::getIndexPage());
@@ -121,7 +117,7 @@ class Composer
                 }
                 $writeFile(
                     $assumeLoc.'/src/App/'.$siblingDir,         // folder
-                    $file,                                      // local filename
+                    str_replace('.phps','.php',$file),          // local filename
                     file_get_contents($srcFile)                 // content
                 );
             }
@@ -145,6 +141,74 @@ class Composer
 
     protected static function getIndexPage(){
         return file_get_contents(__DIR__.'/index.phps');
+    }
+
+    static protected function write_ini_file($file, $array = []) {
+        // check first argument is string
+        if (!is_string($file)) {
+            throw new \InvalidArgumentException('Function argument 1 must be a string.');
+        }
+
+        // check second argument is array
+        if (!is_array($array)) {
+            throw new \InvalidArgumentException('Function argument 2 must be an array.');
+        }
+
+        // process array
+        $data = array();
+        foreach ($array as $key => $val) {
+            if (is_array($val)) {
+                $data[] = "[$key]";
+                foreach ($val as $skey => $sval) {
+                    if (is_array($sval)) {
+                        foreach ($sval as $_skey => $_sval) {
+                            if (is_numeric($_skey)) {
+                                $data[] = $skey.'[] = '.(is_numeric($_sval) ? $_sval : (ctype_upper($_sval) ? $_sval : '"'.$_sval.'"'));
+                            } else {
+                                $data[] = $skey.'['.$_skey.'] = '.(is_numeric($_sval) ? $_sval : (ctype_upper($_sval) ? $_sval : '"'.$_sval.'"'));
+                            }
+                        }
+                    } else {
+                        $data[] = $skey.' = '.(is_numeric($sval) ? $sval : (ctype_upper($sval) ? $sval : '"'.$sval.'"'));
+                    }
+                }
+            } else {
+                $data[] = $key.' = '.(is_numeric($val) ? $val : (ctype_upper($val) ? $val : '"'.$val.'"'));
+            }
+            // empty line
+            $data[] = null;
+        }
+
+        // open file pointer, init flock options
+        $fp = fopen($file, 'w');
+        $retries = 0;
+        $max_retries = 100;
+
+        if (!$fp) {
+            return false;
+        }
+
+        // loop until get lock, or reach max retries
+        do {
+            if ($retries > 0) {
+                usleep(rand(1, 5000));
+            }
+            $retries += 1;
+        } while (!flock($fp, LOCK_EX) && $retries <= $max_retries);
+
+        // couldn't get the lock
+        if ($retries == $max_retries) {
+            return false;
+        }
+
+        // got lock, write data
+        fwrite($fp, implode(PHP_EOL, $data).PHP_EOL);
+
+        // release lock
+        flock($fp, LOCK_UN);
+        fclose($fp);
+
+        return true;
     }
 
 }

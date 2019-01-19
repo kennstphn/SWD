@@ -18,10 +18,12 @@ class Bootstrap4 extends Module
          * @var Twig $renderer
          */
         foreach($renderers as $renderer){
-            $renderer->setLoader(new \Twig_Loader_Chain([
-                $renderer->getLoader(),
-                $this->getLoader()
-            ]));
+            if($renderer instanceof Twig){
+                $renderer->setLoader(new \Twig_Loader_Chain([
+                    $renderer->getLoader(),
+                    $this->getLoader()
+                ]));
+            }
         }
     }
     

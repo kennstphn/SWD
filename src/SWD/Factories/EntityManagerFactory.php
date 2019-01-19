@@ -7,17 +7,29 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\Tools\Setup;
 
-abstract class EntityManagerFactory
+class EntityManagerFactory
 {
     protected static $em;
     const APP_VERSION = 'App\\Factories\\EntityManagerFactory';
 
     static $file = __FILE__;
 
-    protected static function driver(){return 'pdo_mysql';}
-    abstract static protected function user():string;
-    abstract static protected function password():string;
-    abstract static protected function dbname():string;
+    protected static function driver(){
+        return EnvironmentFactory::find()->dbdriver ?? 'pdo_mysql';
+    }
+    static protected function user():string{
+        return EnvironmentFactory::find()->dbuser();
+    }
+    static protected function password():string{
+        return EnvironmentFactory::find()->dbpwd();
+    }
+    static protected function dbname():string{
+        return EnvironmentFactory::find()->dbname();
+    }
+
+    static protected function host():string{
+        return EnvironmentFactory::find()->host?? 'localhost';
+    }
 
     static protected function getDriver(){
         $driver = new MappingDriverChain();
@@ -38,7 +50,7 @@ abstract class EntityManagerFactory
         $proxyDir = substr(getcwd(),0,strrpos(getcwd(),'/' )).'/proxy-entities';
         if ( ! file_exists($proxyDir)){
             $oldMask = umask(0);
-            if ( ! mkdir($proxyDir,0775)){
+            if ( ! mkdir($proxyDir,0775,true)){
                 throw new \Exception('unable to create proxy directory '.$proxyDir );
             };
             umask($oldMask);
@@ -60,7 +72,8 @@ abstract class EntityManagerFactory
             'driver'   => call_user_func(array($thisClass,'driver')),
             'user'     => call_user_func(array($thisClass,'user')),
             'password' => call_user_func(array($thisClass,'password')),
-            'dbname'   => call_user_func(array($thisClass,'dbname'))
+            'dbname'   => call_user_func(array($thisClass,'dbname')),
+            'host'     => call_user_func([$thisClass,'host'])
         );
 
         self::$em = EntityManager::create($connArray, $config);
@@ -68,7 +81,9 @@ abstract class EntityManagerFactory
         return self::$em;
     }
 
-    abstract protected static function entityDirectory():string;
+    protected static function entityDirectory():string{
+        return ROOT_DIR.'/src/App/Entities';
+    }
 
     static function listEntityClasses():array{
         return call_user_func([get_called_class(),'getCrawlableClasses']);
@@ -100,6 +115,9 @@ abstract class EntityManagerFactory
 
     static protected $classList = [];
     static function registerEntityClass($class){
+        if(class_exists(self::APP_VERSION)){
+            call_user_func([self::APP_VERSION, 'registerEntityClass'],$class);
+        }
         array_push(self::$classList, $class);
     }
 }
