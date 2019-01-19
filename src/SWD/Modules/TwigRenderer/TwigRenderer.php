@@ -2,7 +2,7 @@
 namespace SWD\Modules\TwigRenderer;
 
 
-use App\Factories\EntityManagerFactory;
+use SWD\Factories\EntityManagerFactory;
 use SWD\Factories\UserFactory;
 use SWD\Helper\TwigFilterCollection;
 use SWD\Modules\TwigTemplateFunctions\TwigTemplateFunctions;

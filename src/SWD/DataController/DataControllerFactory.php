@@ -2,7 +2,6 @@
 namespace SWD\DataController;
 
 
-use App\Factories\EntityManagerFactory;
 use SWD\Request\Request_interface;
 use SWD\Request\UrlParserFactory;
 use SWD\Response\Response_interface;
@@ -48,7 +47,7 @@ class DataControllerFactory implements ControllerFactory_interface, Controller_i
         if ( ! $class){
             if ( $this->response->isOk() &&  (! $this->response->hasData() && ! $this->response->hasTemplate() ) ){
                 try{
-                    $page = \App\Factories\EntityManagerFactory::create()->createQueryBuilder()
+                    $page = \SWD\Factories\EntityManagerFactory::create()->createQueryBuilder()
                         ->select('p')->from(\App\Entities\Page::class, 'p')
                         ->where('p.loc = :url')->setParameter('url', $this->request->url()->__toString())
                         ->getQuery()->getSingleResult();

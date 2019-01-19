@@ -4,7 +4,7 @@ namespace SWD\DataController;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
-use App\Factories\EntityManagerFactory;
+use SWD\Factories\EntityManagerFactory;
 use SWD\DataController\Search\Search;
 use SWD\Modules\AccessControl\AccessControl;
 use SWD\Request\Request_interface;

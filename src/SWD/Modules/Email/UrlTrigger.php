@@ -1,6 +1,6 @@
 <?php
 namespace SWD\Modules\Email;
-use App\Factories\EntityManagerFactory;
+use SWD\Factories\EntityManagerFactory;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use SWD\Helper\TwigFilterCollection;
@@ -22,7 +22,7 @@ class UrlTrigger extends Module
     ];
     
     function em():EntityManager{
-        return call_user_func(['App\\Factories\\EntityManagerFactory','create']);
+        return call_user_func(['SWD\\Factories\\EntityManagerFactory','create']);
     }
     
     /** @var ArrayCollection $errors */

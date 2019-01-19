@@ -8,7 +8,7 @@ class EntityNav extends Module
 {
     function __invoke(string $hookName, Website $website)
     {
-        $em = \App\Factories\EntityManagerFactory::create();
+        $em = \SWD\Factories\EntityManagerFactory::create();
         $nav = new Navigation\Navigation();
 
         //$nav->search = new Navigation\Search;

@@ -3,7 +3,7 @@ namespace SWD\Modules\TwigTemplateFunctions;
 
 
 use App\Entities\Item;
-use App\Factories\EntityManagerFactory;
+use SWD\Factories\EntityManagerFactory;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\PersistentCollection;
 use SWD\DataController\EntityController;

@@ -1,7 +1,7 @@
 <?php
 namespace SWD\Modules\AppConfiguration;
 
-use App\Factories\EntityManagerFactory;
+use SWD\Factories\EntityManagerFactory;
 use SWD\Website\Module;
 use SWD\Website\Website;
 

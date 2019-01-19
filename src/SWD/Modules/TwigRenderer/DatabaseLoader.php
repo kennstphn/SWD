@@ -1,7 +1,7 @@
 <?php
 namespace SWD\Modules\TwigRenderer;
 
-use App\Factories\EntityManagerFactory;
+use SWD\Factories\EntityManagerFactory;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\NoResultException;
 use SWD\Structures\HelperTraits\DotClass;

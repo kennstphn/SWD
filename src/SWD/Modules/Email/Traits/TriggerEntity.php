@@ -61,7 +61,7 @@ trait TriggerEntity
         $me = get_called_class();
         
         $url = $website->request()->url()->__toString();
-        $list = \App\Factories\EntityManagerFactory::create()->createQueryBuilder()
+        $list = \SWD\Factories\EntityManagerFactory::create()->createQueryBuilder()
             ->select('t')->distinct(true)->from($me,'t')
             ->where('t.url = :url')->setParameter('url', $url)
             ->getQuery()->getResult();

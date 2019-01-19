@@ -2,7 +2,7 @@
 namespace SWD\Entities;
 
 
-use App\Factories\EntityManagerFactory;
+use SWD\Factories\EntityManagerFactory;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\ClassMetadata;

@@ -2,8 +2,6 @@
 namespace SWD\Structures\Doctrine;
 
 
-use App\Factories\EntityManagerFactory;
-
 class FieldMapping
 {
     protected $fieldName;

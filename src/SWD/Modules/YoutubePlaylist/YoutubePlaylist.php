@@ -1,6 +1,6 @@
 <?php
 namespace SWD\Modules\YoutubePlaylist;
-use App\Factories\EntityManagerFactory;
+use SWD\Factories\EntityManagerFactory;
 use SWD\Modules\TwigRenderer\TwigRenderer;
 use SWD\Website\Module;
 use SWD\Website\Website;

@@ -3,7 +3,7 @@ namespace SWD\AppControllers;
 
 
 use SWD\DataController\ControlledUrl_interface;
-use App\Factories\EntityManagerFactory;
+use SWD\Factories\EntityManagerFactory;
 use SWD\Factories\UserFactory;
 use SWD\Modules\AccessControl\AccessControl;
 use SWD\Request\Request_interface;

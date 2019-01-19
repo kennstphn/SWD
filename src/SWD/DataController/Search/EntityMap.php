@@ -2,7 +2,7 @@
 namespace SWD\DataController\Search;
 
 
-use App\Factories\EntityManagerFactory;
+use SWD\Factories\EntityManagerFactory;
 use Doctrine\ORM\Mapping\ClassMetadata;
 
 class EntityMap

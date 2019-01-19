@@ -4,7 +4,7 @@ namespace SWD\Factories;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\NoResultException;
-use App\Factories\EntityManagerFactory;
+use SWD\Factories\EntityManagerFactory;
 use SWD\DataController\DataControllerFactory;
 use SWD\Modules\AccessControl\User_interface;
 use SWD\Modules\AccessControl\UserFactory_interface;

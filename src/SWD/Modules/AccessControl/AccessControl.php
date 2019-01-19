@@ -4,7 +4,7 @@ namespace SWD\Modules\AccessControl;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\NoResultException;
-use App\Factories\EntityManagerFactory;
+use SWD\Factories\EntityManagerFactory;
 use SWD\Factories\UserFactory;
 use SWD\Structures\HelperTraits\DotClass;
 use SWD\Website\Module;

@@ -102,7 +102,7 @@ class Item extends EntityBase implements \IteratorAggregate, \SWD\Entities\Defin
 
     function getAssociationFormFields()
     {
-        $em = \App\Factories\EntityManagerFactory::create();
+        $em = \SWD\Factories\EntityManagerFactory::create();
 
         return [
             $this->getFileFormField($em),

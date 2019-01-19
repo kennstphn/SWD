@@ -5,7 +5,7 @@ namespace SWD\Modules\Redirect;
 use Doctrine\ORM\NoResultException;
 use SWD\Website\Module;
 use SWD\Website\Website;
-use App\Factories\EntityManagerFactory;
+use SWD\Factories\EntityManagerFactory;
 
 class Redirect extends Module
 {
