@@ -1,8 +1,9 @@
 <?php
 namespace SWD\Modules\EntityInstaller;
 
-use App\Factories\EntityManagerFactory;
+use SWD\Factories\EntityManagerFactory;
 use Doctrine\ORM\Tools\SchemaTool;
+use SWD\Factories\EnvironmentFactory;
 use SWD\Website\Module;
 use SWD\Website\Website;
 
@@ -13,16 +14,15 @@ class EntityInstaller extends Module
 
     function __invoke(string $hookName, Website $website)
     {
+        if( ! EnvironmentFactory::find()->runEntityInstaller ){
+            return;
+        }
         $classList = EntityManagerFactory::listEntityClasses();
         $entityManager = EntityManagerFactory::create();
 
         $metadataArray = array();
         foreach($classList as $class){
             array_push($metadataArray,$entityManager->getClassMetadata($class));
-        }
-
-        if ( ! $website->request()->get()->get('install') == 'force'){
-            throw new \Exception('For safety, installation will not proceed without ?install=force url override');
         }
 
         $tool = new SchemaTool($entityManager);

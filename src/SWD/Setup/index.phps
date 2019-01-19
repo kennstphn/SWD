@@ -22,7 +22,7 @@ try {
     $theRequest = \SWD\Request\Request::create();
     
     $website = new \SWD\Website\Website($theRequest,new \SWD\Response\Response() );
-    $website->setDebugMode(\SWD\Factories\EnvironmentFactory::find()->debug);
+    $website->setDebugMode(\SWD\Factories\EnvironmentFactory::find()->debug ?? false);
 
     \SWD\Modules\DataControllerHookBridge::init($website);
 

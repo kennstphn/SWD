@@ -71,7 +71,9 @@ class Composer
                     'dbuser'=>$user,
                     'dbpwd'=>$password,
                     'dbname'=>$dbName,
-                    'dbhost'=>$dbhost
+                    'dbhost'=>$dbhost,
+                    'debug'=>false,
+                    'runEntityInstaller'=>true
                 ]);
             }
         };
