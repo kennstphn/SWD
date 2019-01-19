@@ -10,6 +10,7 @@ use Doctrine\ORM\Tools\Setup;
 class EntityManagerFactory
 {
     protected static $em;
+    protected static $driver;
     const APP_VERSION = 'App\\Factories\\EntityManagerFactory';
 
     static $file = __FILE__;
@@ -32,9 +33,18 @@ class EntityManagerFactory
     }
 
     static protected function getDriver(){
-        $driver = new MappingDriverChain();
-        $driver->addDriver(new StaticPHPDriver(str_replace('Factories', 'Entities',__DIR__)),'App\\Entities');
-        return $driver;
+
+        $class = get_called_class();
+
+        if( $class === \SWD\Factories\EntityManagerFactory::class && class_exists(self::APP_VERSION)){
+            return call_user_func([self::APP_VERSION, 'getDriver']);
+        }
+
+        if ( ! $class::$driver){
+            $class::$driver = new MappingDriverChain();
+            $class::$driver->addDriver(new StaticPHPDriver(ROOT_DIR.'/src/App/Entities'), 'App\\Entities');
+        }
+        return $class::$driver;
     }
     /**
      * @return EntityManager
@@ -58,7 +68,7 @@ class EntityManagerFactory
 
 
         if ( file_exists($proxyDir) && ! is_dir($proxyDir)){
-            throw new \Exception('Prodxy directory is not a directory -- '.$proxyDir);
+            throw new \Exception('Proxy directory is not a directory -- '.$proxyDir);
         }
 
 
