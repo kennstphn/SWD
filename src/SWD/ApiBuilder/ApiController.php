@@ -8,8 +8,13 @@ class ApiController extends UrlController
     protected $getEvents = [];
     protected $postEvents = [];
 
-    protected $additionalGetContext=[];
-    protected $additionalPostContext=[];
+    function getGetData(){
+        return $this->request->get()->toArray();
+    }
+
+    function getPostData(){
+        return $this->request->post()->toArray();
+    }
 
     /**
      * @param EventBase[] $getEvents
@@ -37,8 +42,9 @@ class ApiController extends UrlController
         $d = new Distributor($this->$methodEvents);
 
         //add context and find event
-        $additionalMethodContext = 'additional'.ucfirst($method).'Context';
-        $event = $d->findEvent(array_merge($this->request->$method(), $this->$additionalMethodContext));
+
+        $getData = 'get'.ucfirst($method).'Data';
+        $event = $d->findEvent(is_callable([$this,$getData]) ? call_user_func([$this,$getData]) : $this->request->$method()->toArray() );
 
         //trigger event
         $event->run($this->response);
