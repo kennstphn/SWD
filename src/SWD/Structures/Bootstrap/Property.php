@@ -6,7 +6,14 @@ class Property
 {
     public $name;
     public $type;
+
+    /**
+     * @var $required
+     * @depreciated
+     */
     public $required;
+
+    public $isRequired;
     public $returnType;
 
     protected $isScalar;

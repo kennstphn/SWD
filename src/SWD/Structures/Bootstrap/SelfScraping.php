@@ -52,7 +52,8 @@ trait SelfScraping
         foreach($methods as $method){
             if($method->isStatic()){continue;} //skip static methods
             if( ! $isSetter($method)){continue;}//only setters
-            if($method->getNumberOfRequiredParameters() !== 1){continue;}//setters can only have 1 required parameter
+            if($method->getNumberOfRequiredParameters() > 1){continue;}//setters can only have 1 required parameter
+            if($method->getNumberOfParameters() < 1){continue;}//setters must receive a parameter
 
             $property = lcfirst(substr($method->name,3));
             if ($property===''){continue;}//ignore method "set"
@@ -66,6 +67,7 @@ trait SelfScraping
             }
 
             $type=$method->getParameters()[0]->getType();
+            if($type == null){continue;}// skip non type restricted setters
 
             $required = $reflection->hasMethod($getter) && $reflection->getMethod($getter)->getReturnType();
             $returnType = $reflection->hasMethod($getter) && $reflection->getMethod($getter)->getReturnType()
@@ -78,6 +80,7 @@ trait SelfScraping
             $prop->name = $property;
             $prop->type = $type;
             $prop->required  = $required;
+            $prop->isRequired = $method->getNumberOfRequiredParameters() == 1;
             $prop->returnType = $returnType;
             
             array_push($props, $prop);
