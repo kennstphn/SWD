@@ -42,10 +42,10 @@ class AssociationMapping
         $this->cascadeRefresh = (bool) $mapping['isCascadeRefresh'];
         $this->cascadeMerge = (bool) $mapping['isCascadeMerge'];
         $this->cascadeDetach = (bool) $mapping['isCascadeDetach'];
-        $this->joinColumns = $mapping['joinColumns'];
-        $this->sourceToTargetKeyColumns = $mapping['sourceToTargetKeyColumns'];
-        $this->joinColumnFieldNames = $mapping['joinColumnFieldNames'];
-        $this->targetToSourceKeyColumns = $mapping['targetToSourceKeyColumns'];
+        $this->joinColumns = $mapping['joinColumns'] ?? null;
+        $this->sourceToTargetKeyColumns = $mapping['sourceToTargetKeyColumns'] ?? null;
+        $this->joinColumnFieldNames = $mapping['joinColumnFieldNames'] ?? null;
+        $this->targetToSourceKeyColumns = $mapping['targetToSourceKeyColumns'] ??  null;
         $this->orphanRemoval = $mapping['orphanRemoval'];
     }
 
