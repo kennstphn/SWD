@@ -43,13 +43,13 @@ trait Bootstrap
         $class = get_called_class();
         $properties = $class::_scrape();
         $me = new $class;
-        
+
         foreach($properties as $property){
             //invalidate missing required field
             if ($property->required && ! array_key_exists($property->name, $array)){
-                throw new MissingArrayKey;
+                throw new MissingArrayKey("Missing Field: {$property->name}");
             }
-            
+
             $val = $array[$property->name];
             $val = $val===''? null : $val;
 
@@ -57,25 +57,25 @@ trait Bootstrap
             if($property->required && is_null($val)){
                 throw new RequiredFieldIsNull($property->name);
             }
-           
+
             /*
              * Instantiate non-scalar sub-entities;
              */
             if( ! $property->isScalar()){
                 // non-scalar properties require instantiation arrays of their own
                 if ( ! is_array($val)){ throw new InvalidSubArray($property->name, $property->type); }
-                
+
                 // non-scalar property->type (class) must use Bootstrap or independantly implement interface
-                if( 
+                if(
                     ! in_array(Bootstrap::class, class_uses($property->type))
                     && ! in_array(Bootstrap_interface::class, class_implements($property->type))
                 ){
                     throw new SubClassInstantiationFailure($property->type); }
-                
+
                 /** @var Bootstrap|Bootstrap_interface $subArrayClass */
                 $subArrayClass = $property->type;
                 $val = $subArrayClass::fromArray($val);
-                    
+
             }
 
             //enforce scalar types
@@ -102,7 +102,7 @@ trait Bootstrap
             }catch (\TypeError $e){
                 throw new TypeError($e->getMessage(),400,$e);
             }
-            
+
         }
         return $me;
     }
