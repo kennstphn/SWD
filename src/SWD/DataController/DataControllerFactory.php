@@ -45,6 +45,7 @@ class DataControllerFactory implements ControllerFactory_interface, Controller_i
         $class = $parser->getEntityClass();
 
         if ( ! $class){
+            if ( !class_exists('App\\Entities\\Page')){return;}
             if ( $this->response->isOk() &&  (! $this->response->hasData() && ! $this->response->hasTemplate() ) ){
                 try{
                     $page = \SWD\Factories\EntityManagerFactory::create()->createQueryBuilder()
