@@ -50,7 +50,9 @@ class TwigRenderer extends Module
         
         $sandbox = self::sandbox();
         $sandbox->addFunction(TwigTemplateFunctions::api($website->request()));
-        $sandbox->addGlobal('currentUser', UserFactory::getCurrentUser($website->request()));
+        if( class_exists('App\\Entities\\User') ){
+            $sandbox->addGlobal('currentUser', UserFactory::getCurrentUser($website->request()));
+        }
         
         $twig->addFilter(new \Twig_SimpleFilter('sandbox', function ($string)use ($sandbox,$website) {
             try{
