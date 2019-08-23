@@ -42,7 +42,8 @@ class Request implements Request_interface
                 : null;
         }
 
-        return new self(
+        $class = get_called_class();
+        return new $class(
             $cookie
             , $env
             , $files
