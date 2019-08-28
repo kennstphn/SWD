@@ -49,7 +49,7 @@ class UrlExtended implements Collection, Selectable
     }
 
     function count(){
-        $this->data->count();
+        return $this->data->count();
     }
 
     function isFolder(){return $this->folder;}
