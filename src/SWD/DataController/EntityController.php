@@ -112,6 +112,11 @@ class EntityController implements Controller_interface
         }catch (\Throwable $e){
             $this->response->addError($e);
         }
+        if($this->request->get()->containsKey('entityMetadata')){
+            $this->response->addMeta('entityMetadata',$this->em->getClassMetadata($this->entityClass));
+        }
+        $this->response->addMeta('nameField',call_user_func([$this->entityClass,'nameField']));
+        
         if($this->response->hasData()){return;}
         $this->response->setResponseCode(
             $this->response->getResponseCode() ?? 404
