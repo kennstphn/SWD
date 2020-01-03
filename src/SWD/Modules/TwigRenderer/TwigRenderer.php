@@ -67,6 +67,12 @@ class TwigRenderer extends Module
     }
 
     protected function getTwigTemplateDirectory(){
+        if(defined('TEMPLATE_DIR')){
+            return TEMPLATE_DIR;
+        }
+        if($tpl = \SWD\Factories\EnvironmentFactory::get('template_dir')){
+            return $tpl;
+        }
         $lastSlash = strrpos(getcwd(),'/');
         return substr(getcwd(),0,$lastSlash).'/templates';
     }
