@@ -136,6 +136,9 @@ class TwigTemplateFunctions extends Module
             $result = $query->getQuery()->getResult();
             return $result;
         }));
+        $twig->addFunction(new \Twig_Function('header',function($string,$replace = true,$http_response_code = null){
+            header($string,$replace,$http_response_code);
+        }));
 
         $twig->addFilter(TwigFilterCollection::dotClass());
         $twig->addFilter(TwigFilterCollection::markdown());
