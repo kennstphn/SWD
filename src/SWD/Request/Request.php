@@ -77,7 +77,19 @@ class Request implements Request_interface
     function session():ArrayCollection_superglobal{
         if ($this->session ){return $this->session;}
         //if ( in_array(PHP_SAPI, ['cli','cli-server'] )){return new ArrayCollection_superglobal();}
-        session_start();
+        switch(session_status()){
+            case PHP_SESSION_NONE:
+                session_start();
+                break;
+            case PHP_SESSION_DISABLED:
+                $this->session = new ArrayCollection_superglobal();
+                return $this->session;
+                break;
+            case PHP_SESSION_ACTIVE:
+            default:
+                break;
+        }
+
         $this->session = new ArrayCollection_superglobal( $_SESSION);
         return $this->session;
     }
