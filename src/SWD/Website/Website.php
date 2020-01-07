@@ -51,9 +51,12 @@ class Website
         $csrfProtector->persistToken();
     }
 
-    function run(Request_interface $request = null){
+    function run(Request_interface $request = null, Response_interface $response = null){
         if($request){
             $this->request = $request;
+        }
+        if($response){
+            $this->response = $response;
         }
         
         $this->blockCsrf();
