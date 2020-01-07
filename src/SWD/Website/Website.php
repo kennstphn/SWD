@@ -42,7 +42,6 @@ class Website
         ob_start();
         $this->request = $request;
         $this->response = $response;
-        $this->blockCsrf();
         $this->modules = new ModularArray($this->request, $this->response);
     }
 
@@ -52,7 +51,12 @@ class Website
         $csrfProtector->persistToken();
     }
 
-    function run(){
+    function run(Request_interface $request = null){
+        if($request){
+            $this->request = $request;
+        }
+        
+        $this->blockCsrf();
 
         $this->invokeModulesByHook(self::INIT);
 
